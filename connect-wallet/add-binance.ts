@@ -5,7 +5,7 @@
  * and retrieve wallet information once connected.
  */
 
-import { get, post, sleep } from './utils';
+import { get, post, sleep } from '../utils';
 
 // Base URL for Bluvo API
 const BASE_URL = 'https://api-bluvo.com';
@@ -18,6 +18,9 @@ const BLUVO_API_KEY = '<your-bluvo-api-key>';
 // Binance API credentials - Replace with your own
 const BINANCE_API_KEY = '<your-binance-account-api-key>';
 const BINANCE_API_SECRET = '<your-binance-account-api-secret>';
+
+// See full list here -> https://docs.bluvo.co/supported-exchanges
+const EXCHANGE = 'binance';
 
 /**
  * Connect a Binance wallet to Bluvo
@@ -37,7 +40,7 @@ async function connectBinanceWallet() {
     
     // Add Binance wallet
     const addWalletResponse = await post(
-      `${BASE_URL}/v0/cex/connect/binance`,
+      `${BASE_URL}/v0/cex/connect/${EXCHANGE}`,
       headers,
       {
         projectId: BLUVO_PROJECT_ID,

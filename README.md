@@ -35,7 +35,6 @@ The following is provided without any promises or guarantees.
 | `list-trades`       | List all trades of a crypto wallet            | [Link](https://link-gh.com) |
 | `get-trade`         | Get a specific trade of a crypto wallet       | [Link](https://link-gh.com) |
 
-
 ## Projects
 
 | Name      | Description                       | Link                        |
@@ -53,8 +52,6 @@ The following is provided without any promises or guarantees.
 | `@bluvo/astro`   | Astro Embed UI widget component   | [Link](https://playground.bluvo.co) |
 | `@bluvo/vanilla` | Vanilla Embed UI widget component | [Link](https://playground.bluvo.co) |
 | `@bluvo/solid`   | Solid Embed UI widget component   | [Link](https://playground.bluvo.co) |
-
-
 
 ## Papers, Blogs and Articles
 

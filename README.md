@@ -22,18 +22,18 @@ The following is provided without any promises or guarantees.
 
 ## Code Samples
 
-| Name                | Description                                   | Github Link                 |
-|---------------------|-----------------------------------------------|-----------------------------|
-| `connect-wallet`    | Connect a crypto wallet                       | [Link](https://link-gh.com) |
-| `get-wallet`        | Get a crypto wallet                           | [Link](https://link-gh.com) |
-| `list-wallets`      | List all your customer's crypto wallets       | [Link](https://link-gh.com) |
-| `delete-wallet`     | Delete a crypto wallet                        | [Link](https://link-gh.com) |
-| `list-transactions` | List all transactions of a crypto wallet      | [Link](https://link-gh.com) |
-| `get-transaction`   | Get a specific transaction of a crypto wallet | [Link](https://link-gh.com) |
-| `list-orders`       | List all orders of a crypto wallet            | [Link](https://link-gh.com) |
-| `get-order`         | Get a specific order of a crypto wallet       | [Link](https://link-gh.com) |
-| `list-trades`       | List all trades of a crypto wallet            | [Link](https://link-gh.com) |
-| `get-trade`         | Get a specific trade of a crypto wallet       | [Link](https://link-gh.com) |
+| Name                | Description                                   | Github Link                                     |
+|---------------------|-----------------------------------------------|-------------------------------------------------|
+| `connect-wallet`    | Connect a crypto wallet                       | [add-binance.ts](connect-wallet/add-binance.ts) |
+| `get-wallet`        | Get a crypto wallet                           | [get-binance.ts](get-wallet/get-binance.ts)     |
+| `list-wallets`      | List all your customer's crypto wallets       | [Link](https://link-gh.com)                     |
+| `delete-wallet`     | Delete a crypto wallet                        | [Link](https://link-gh.com)                     |
+| `list-transactions` | List all transactions of a crypto wallet      | [Link](https://link-gh.com)                     |
+| `get-transaction`   | Get a specific transaction of a crypto wallet | [Link](https://link-gh.com)                     |
+| `list-orders`       | List all orders of a crypto wallet            | [Link](https://link-gh.com)                     |
+| `get-order`         | Get a specific order of a crypto wallet       | [Link](https://link-gh.com)                     |
+| `list-trades`       | List all trades of a crypto wallet            | [Link](https://link-gh.com)                     |
+| `get-trade`         | Get a specific trade of a crypto wallet       | [Link](https://link-gh.com)                     |
 
 ## Projects
 

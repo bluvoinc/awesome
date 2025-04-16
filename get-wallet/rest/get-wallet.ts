@@ -5,7 +5,7 @@
  * using a wallet ID.
  */
 
-import { get } from '../utils';
+import { get } from '../../utils';
 
 // Base URL for Bluvo API
 const BASE_URL = 'https://api-bluvo.com';

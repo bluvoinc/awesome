@@ -12,7 +12,7 @@ createClient({
         sourceWalletId: '<your-bluvo-wallet-id>',
         amount: 0.01,
         asset: 'LTC',
-        destinationAddress: '<your-bitcoin-address>',
+        destinationAddress: '<your-litecoin-address>',
         network: undefined,
         tag: undefined,
     })

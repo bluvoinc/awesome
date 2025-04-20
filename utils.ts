@@ -63,3 +63,33 @@ export const post = async (
     throw error;
   }
 };
+
+/**
+ * Helper function for PUT requests
+ * @param url - The URL to fetch
+ * @param headers - Request headers
+ * @param body - Request body
+ * @returns Response JSON
+ */
+export const put = async (
+  url: string, 
+  headers: Record<string, string>, 
+  body: any
+): Promise<any> => {
+  try {
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(body)
+    });
+    
+    if (!response.ok) {
+      throw new Error(`PUT request failed: ${response.status}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('PUT request error:', error);
+    throw error;
+  }
+};

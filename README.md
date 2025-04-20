@@ -22,18 +22,19 @@ The following is provided without any promises or guarantees.
 
 ## Code Samples
 
-| Name                | Description                                   | REST                                            | SDK                                                   |
-|---------------------|-----------------------------------------------|-------------------------------------------------|-------------------------------------------------------|
-| `connect-wallet`    | Connect a crypto wallet                       | [post.ts](connect-wallet/rest/add-binance.ts)   | [add-binance.ts](connect-wallet/ts/add-binance.ts)    |
-| `get-wallet`        | Get a crypto wallet                           | [fetch.ts](get-wallet/rest/get-wallet.ts)       | [get-wallet.ts](get-wallet/ts/get-wallet.ts)          |
-| `list-wallets`      | List all your customer's crypto wallets       | [fetch.ts](list-wallet/rest/list-wallets.ts)    | [list-wallets.ts](list-wallet/ts/list-wallets.ts)     | 
-| `delete-wallet`     | Delete a crypto wallet                        | [fetch.ts](delete-wallet/rest/delete-wallet.ts) | [delete-wallet.ts](delete-wallet/ts/delete-wallet.ts) |
-| `list-transactions` | List all transactions of a crypto wallet      | coming soon                                     | coming soon                                           |
-| `get-transaction`   | Get a specific transaction of a crypto wallet | coming soon                                     | coming soon                                           |
-| `list-orders`       | List all orders of a crypto wallet            | coming soon                                     | coming soon                                           |
-| `get-order`         | Get a specific order of a crypto wallet       | coming soon                                     | coming soon                                           |
-| `list-trades`       | List all trades of a crypto wallet            | coming soon                                     | coming soon                                           |
-| `get-trade`         | Get a specific trade of a crypto wallet       | coming soon                                     | coming soon                                           |
+| Name                | Description                                   | REST                                                    | SDK                                                          |
+|---------------------|-----------------------------------------------|---------------------------------------------------------|--------------------------------------------------------------|
+| `connect-wallet`    | Connect a crypto wallet                       | [post.ts](connect-wallet/rest/add-binance.ts)           | [add-binance.ts](connect-wallet/ts/add-binance.ts)           |
+| `get-wallet`        | Get a crypto wallet                           | [fetch.ts](get-wallet/rest/get-wallet.ts)               | [get-wallet.ts](get-wallet/ts/get-wallet.ts)                 |
+| `list-wallets`      | List all your customer's crypto wallets       | [fetch.ts](list-wallet/rest/list-wallets.ts)            | [list-wallets.ts](list-wallet/ts/list-wallets.ts)            | 
+| `delete-wallet`     | Delete a crypto wallet                        | [fetch.ts](delete-wallet/rest/delete-wallet.ts)         | [delete-wallet.ts](delete-wallet/ts/delete-wallet.ts)        |
+| `list-transactions` | List all transactions of a crypto wallet      | [fetch.ts](list-transactions/rest/list-transactions.ts) | [transactions.ts](list-transactions/ts/list-transactions.ts) |
+| `withdraw`          | Withdraw assets CEX -> DEX                    | [fetch.ts](withdraw/rest/withdraw.ts)                   | [withdraw.ts](withdraw/ts/withdraw.ts)                       |
+| `get-transaction`   | Get a specific transaction of a crypto wallet | coming soon                                             | coming soon                                                  |
+| `list-orders`       | List all orders of a crypto wallet            | coming soon                                             | coming soon                                                  |
+| `get-order`         | Get a specific order of a crypto wallet       | coming soon                                             | coming soon                                                  |
+| `list-trades`       | List all trades of a crypto wallet            | coming soon                                             | coming soon                                                  |
+| `get-trade`         | Get a specific trade of a crypto wallet       | coming soon                                             | coming soon                                                  |
 
 ## Projects
 
@@ -46,12 +47,12 @@ The following is provided without any promises or guarantees.
 | Name             | Description                       | Link                                |
 |------------------|-----------------------------------|-------------------------------------|
 | `@bluvo/nextjs`  | NextJS Embed UI widget component  | [Link](https://playground.bluvo.co) |
-| `@bluvo/react`   | React Embed UI widget component   | [Link](https://playground.bluvo.co) |    
-| `@bluvo/vue`     | Vue Embed UI widget component     | [Link](https://playground.bluvo.co) |
-| `@bluvo/svelte`  | Svelte Embed UI widget component  | [Link](https://playground.bluvo.co) |
-| `@bluvo/astro`   | Astro Embed UI widget component   | [Link](https://playground.bluvo.co) |
-| `@bluvo/vanilla` | Vanilla Embed UI widget component | [Link](https://playground.bluvo.co) |
-| `@bluvo/solid`   | Solid Embed UI widget component   | [Link](https://playground.bluvo.co) |
+| `@bluvo/react`   | React Embed UI widget component   | coming soon                         |    
+| `@bluvo/vue`     | Vue Embed UI widget component     | coming soon                         |
+| `@bluvo/svelte`  | Svelte Embed UI widget component  | coming soon                         |
+| `@bluvo/astro`   | Astro Embed UI widget component   | coming soon                         |
+| `@bluvo/vanilla` | Vanilla Embed UI widget component | coming soon                         |
+| `@bluvo/solid`   | Solid Embed UI widget component   | coming soon                         |
 
 ## Papers, Blogs and Articles
 

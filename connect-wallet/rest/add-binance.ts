@@ -5,7 +5,7 @@
  * and retrieve wallet information once connected.
  */
 
-import { get, post, sleep } from '../../utils';
+import { get, post } from '../../utils';
 import {pollWorkflow} from "./utils";
 
 // Base URL for Bluvo API
@@ -28,15 +28,18 @@ const EXCHANGE = 'binance';
  */
 async function connectBinanceWallet() {
   try {
+    const walletId = crypto.randomUUID();
+
     // Create API headers
     const headers = {
       'x-bluvo-org-id': BLUVO_ORG_ID,
       'x-bluvo-api-key': BLUVO_API_KEY,
+      'x-bluvo-project-id': BLUVO_PROJECT_ID,
+      'x-bluvo-wallet-id': walletId, // Optional: specify wallet ID
       'Content-Type': 'application/json'
     };
 
     // Generate a unique wallet ID
-    const walletId = crypto.randomUUID();
     console.log('🔑 Creating wallet with ID:', walletId);
     
     // Add Binance wallet
@@ -47,7 +50,8 @@ async function connectBinanceWallet() {
         projectId: BLUVO_PROJECT_ID,
         walletId,
         apiKey: BINANCE_API_KEY,
-        apiSecret: BINANCE_API_SECRET
+        apiSecret: BINANCE_API_SECRET,
+        ips: ['216.173.96.160']                         // Optional: whitelist IPs (required for withdrawals)
       }
     );
     

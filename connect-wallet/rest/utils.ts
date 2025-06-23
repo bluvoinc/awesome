@@ -6,6 +6,7 @@ const BASE_URL = 'https://api-bluvo.com';
 /**
  * Poll workflow status until completion or failure
  */
+// @ts-ignore
 export async function pollWorkflow(workflowRunId: string, headers: Record<string, string>) {
     const MAX_ATTEMPTS = 10;
     const POLLING_INTERVAL = 3000; // 3 seconds
@@ -21,13 +22,13 @@ export async function pollWorkflow(workflowRunId: string, headers: Record<string
         const { steps } = response;
 
         // Check if workflow is complete
-        if (!steps || steps.length >= 3) {
+        if (!steps || steps.some(step => step.isEnd || step.state !== 'STEP_SUCCESS')) {
             console.log('✓ Workflow completed successfully');
             return;
         }
 
         // Check for workflow failure
-        if (steps.length > 0 && steps[steps.length - 1].state === 'RUN_FAILED') {
+        if (steps.length > 0 && steps[steps.length - 1].state === 'STEP_FAILED') {
             const errorDetails = steps[steps.length - 1];
             console.error('✗ Workflow failed:', errorDetails);
             throw new Error(`Workflow execution failed: ${JSON.stringify(errorDetails)}`);

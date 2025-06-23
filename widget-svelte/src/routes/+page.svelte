@@ -16,6 +16,25 @@
         auth: {
             orgId: 'bluvo-org-your-org-id',
             projectId: 'your-project-id',
+
+            ottFn: () => {
+                // This function should return a valid One-Time Token (OTT) for authentication.
+                // You can implement your own logic to fetch or generate the OTT.
+                // For example, you might call your backend API to get the token.
+                // And check from your ApiService if the user is logged in and is not spamming OTT requests.
+                return Promise.resolve({
+                    ott: 'your-ott-token', // Replace with your actual OTT token
+                    expiresAt: new Date(Date.now() + 3600 * 1000).toISOString(), // Set expiration time (1 hour from now)
+
+                    topic: {
+                        // Optional: If you want to use a specific topic for the OTT, set it here.
+                        // This is useful if you have multiple topics for different functionalities.
+                        success: true,
+                        name: 'bluvo-widget',
+                        token: 'your-topic-token', // Replace with your actual topic token
+                    }
+                });
+            }
         },
 
         /***************************************************************************************************
@@ -202,16 +221,6 @@
                 // tag: {
                 //   XRP: '1234567890',
                 // },
-            },
-
-            // Control how each field is rendered:
-            //   - "input": editable text field
-            //   - "label": read-only text label
-            //   - "none": hide the field entirely
-            display: {
-                address: 'input',
-                amount: 'input',
-                // tag: 'input', // uncomment if you’re using tags
             },
 
             // Called when the transaction is broadcast successfully (i.e. TX ID is returned).

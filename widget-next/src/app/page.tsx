@@ -8,21 +8,18 @@ function App() {
 
     const settings: BluvoWidgetProps = {
         baseUrl: "https://api-bluvo.com",
-        showcase: {
-            enabled: false,
-        },
-        debug: true,
         // Authentication credentials
         auth: {
             orgId: "bluvo-org-a2e98409-cd68-48c4-853c-73d9228764c0",
             projectId: "b16e1c13-74ad-4b95-b252-0c12e2215b18",
-
             // Function to fetch a one-time token (OTT)
             ottFn: requestOTT
         },
-
         // Core settings
         mode: "transact", // "connect" or "transact"
+
+        // Complete list of exchanges supported by the widget:
+        // https://docs.bluvo.co/exchanges
         exchanges: [
             "binance",
             "coinbase",
@@ -116,7 +113,12 @@ function App() {
             // TODO: possibility to provide an URL that will be fetched
             ipList: '216.173.96.160 64.137.11.35 64.137.11.43 64.137.11.121 193.160.236.132 216.173.96.132 154.7.188.20 193.160.236.153 185.102.49.232 193.160.236.110 185.102.49.224 185.102.49.33 154.22.134.246 154.7.188.71 216.173.96.184 156.238.4.9 185.102.48.248 216.173.96.45 154.37.183.149'
                 .split(' ')
-        }
+        },
+
+        showcase: {
+            enabled: false,
+        },
+        debug: true,
     }
 
     return (

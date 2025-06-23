@@ -9,23 +9,24 @@ const BLUVO_API_KEY = '<your-bluvo-api-key>';
 const BASE_URL = 'https://api-bluvo.com';
 
 // Wallet ID to withdraw from
-const WALLET_ID = '<your-bluvo-wallet-id>';
+const WALLET_ID = 'e873e41f-d6c9-44b1-9182-f519cd2e6e03';
 
 // Set up request headers
 const headers = {
-  'X-BLUVO-ORG-ID': BLUVO_ORG_ID,
-  'X-BLUVO-PROJECT-ID': BLUVO_PROJECT_ID,
-  'X-BLUVO-API-KEY': BLUVO_API_KEY,
+  'x-bluvo-org-id': BLUVO_ORG_ID,
+  'x-bluvo-api-key': BLUVO_API_KEY,
+  'x-bluvo-project-id': BLUVO_PROJECT_ID,
+  'x-bluvo-wallet-id': WALLET_ID, // Optional: specify wallet ID
   'Content-Type': 'application/json'
 };
 
 // Withdrawal request data
 const withdrawalData = {
   asset: 'LTC',
-  amount: 0.01,
+  amount: 0.02,
   address: '<your-destination-address>',
-  tag: '',  // Optional: Only needed for certain cryptocurrencies
-  params: {} // Optional: Additional parameters if needed
+  // network: undefined, // Optional: Specify network if needed.
+  // tag: '',  // Optional: Only needed for certain cryptocurrencies
 };
 
 // Make the API request to perform withdrawal

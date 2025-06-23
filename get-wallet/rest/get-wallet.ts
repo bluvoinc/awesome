@@ -24,6 +24,8 @@ async function getBinanceWallet(walletId: string) {
     const headers = {
       'x-bluvo-org-id': BLUVO_ORG_ID,
       'x-bluvo-api-key': BLUVO_API_KEY,
+      'x-bluvo-project-id': BLUVO_PROJECT_ID,
+      'x-bluvo-wallet-id': walletId,
       'Content-Type': 'application/json'
     };
     

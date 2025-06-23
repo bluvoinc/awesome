@@ -16,6 +16,7 @@ const headers = {
   'X-BLUVO-ORG-ID': BLUVO_ORG_ID,
   'X-BLUVO-PROJECT-ID': BLUVO_PROJECT_ID,
   'X-BLUVO-API-KEY': BLUVO_API_KEY,
+  'X-BLUVO-WALLET-ID': WALLET_ID,
   'Content-Type': 'application/json'
 };
 

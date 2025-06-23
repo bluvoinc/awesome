@@ -8,7 +8,9 @@ const options = {
   method: 'DELETE',
   headers: {
     'x-bluvo-api-key': API_KEY, 
-    'x-bluvo-org-id': ORG_ID
+    'x-bluvo-org-id': ORG_ID,
+    'x-bluvo-project-id': '<project-id>', // Replace with your project ID
+    'x-bluvo-wallet-id': WALLET_ID,
   }
 };
 

@@ -22,19 +22,49 @@ The following is provided without any promises or guarantees.
 
 ## Code Samples
 
-| Name                | Description                                   | REST                                                    | SDK                                                          |
-|---------------------|-----------------------------------------------|---------------------------------------------------------|--------------------------------------------------------------|
-| `connect-wallet`    | Connect a crypto wallet                       | [post.ts](connect-wallet/rest/add-binance.ts)           | [add-binance.ts](connect-wallet/ts/add-binance.ts)           |
-| `get-wallet`        | Get a crypto wallet                           | [fetch.ts](get-wallet/rest/get-wallet.ts)               | [get-wallet.ts](get-wallet/ts/get-wallet.ts)                 |
-| `list-wallets`      | List all your customer's crypto wallets       | [fetch.ts](list-wallet/rest/list-wallets.ts)            | [list-wallets.ts](list-wallet/ts/list-wallets.ts)            | 
-| `delete-wallet`     | Delete a crypto wallet                        | [fetch.ts](delete-wallet/rest/delete-wallet.ts)         | [delete-wallet.ts](delete-wallet/ts/delete-wallet.ts)        |
-| `list-transactions` | List all transactions of a crypto wallet      | [fetch.ts](list-transactions/rest/list-transactions.ts) | [transactions.ts](list-transactions/ts/list-transactions.ts) |
-| `withdraw`          | Withdraw assets CEX -> DEX                    | [fetch.ts](withdraw/rest/withdraw.ts)                   | [withdraw.ts](withdraw/ts/withdraw.ts)                       |
-| `get-transaction`   | Get a specific transaction of a crypto wallet | coming soon                                             | coming soon                                                  |
-| `list-orders`       | List all orders of a crypto wallet            | coming soon                                             | coming soon                                                  |
-| `get-order`         | Get a specific order of a crypto wallet       | coming soon                                             | coming soon                                                  |
-| `list-trades`       | List all trades of a crypto wallet            | coming soon                                             | coming soon                                                  |
-| `get-trade`         | Get a specific trade of a crypto wallet       | coming soon                                             | coming soon                                                  |
+### Core API Examples (Server-side with API Keys)
+
+| Name                | Description                                   | REST                                                                | SDK                                                               |
+|---------------------|-----------------------------------------------|---------------------------------------------------------------------|-------------------------------------------------------------------|
+| `connect-wallet`    | Connect CEX wallet with API credentials       | [add-binance.ts](connect-wallet/rest/add-binance.ts)                | [add-binance.ts](connect-wallet/ts/add-binance.ts)                |
+| `withdraw`          | Withdraw assets from CEX to on-chain address  | [withdraw.ts](withdraw/rest/withdraw.ts)                            | [withdraw.ts](withdraw/ts/withdraw.ts)                            |
+| `get-wallet`        | Get a crypto wallet                           | [get-wallet.ts](get-wallet/rest/get-wallet.ts)                      | [get-wallet.ts](get-wallet/ts/get-wallet.ts)                      |
+| `list-wallets`      | List all your customer's crypto wallets       | [list-wallets.ts](list-wallet/rest/list-wallets.ts)                 | [list-wallets.ts](list-wallet/ts/list-wallets.ts)                 | 
+| `delete-wallet`     | Delete a crypto wallet                        | [delete-wallet.ts](delete-wallet/rest/delete-wallet.ts)             | [delete-wallet.ts](delete-wallet/ts/delete-wallet.ts)             |
+| `list-transactions` | List all transactions of a crypto wallet      | [list-transactions.ts](list-transactions/rest/list-transactions.ts) | [list-transactions.ts](list-transactions/ts/list-transactions.ts) |
+| `get-transaction`   | Get a specific transaction of a crypto wallet | coming soon                                                         | coming soon                                                       |
+| `list-orders`       | List all orders of a crypto wallet            | coming soon                                                         | coming soon                                                       |
+| `get-order`         | Get a specific order of a crypto wallet       | coming soon                                                         | coming soon                                                       |
+| `list-trades`       | List all trades of a crypto wallet            | coming soon                                                         | coming soon                                                       |
+| `get-trade`         | Get a specific trade of a crypto wallet       | coming soon                                                         | coming soon                                                       |
+
+### Widget Examples (Client-side with OAuth2)
+
+| Framework | Description                            | Link                            |
+|-----------|----------------------------------------|---------------------------------|
+| Next.js   | Complete OAuth2 wallet connection flow | [widget-next](widget-next/)     |
+| Svelte    | Complete OAuth2 wallet connection flow | [widget-svelte](widget-svelte/) |
+
+## Recent Updates
+
+- ✅ **Code Refactoring**: Eliminated duplication in polling logic with shared `pollWorkflowStatus` utility
+- ✅ **Bug Fixes**: Fixed critical error handling in wallet connection workflow
+- ✅ **New Examples**: Added Next.js and Svelte widget integration examples
+- ✅ **Improved Documentation**: Enhanced README with authentication method clarifications
+
+## Authentication Methods
+
+### API Key Authentication (Server-side)
+Perfect for backend applications and server-to-server communication:
+- **Examples**: `connect-wallet/ts/`, `withdraw/ts/` 
+- **Use cases**: Automated trading bots, portfolio management systems, server applications
+- **Security**: API keys with restricted permissions and IP whitelisting
+
+### OAuth2 Authentication (Client-side)
+Ideal for frontend applications with user interaction:
+- **Examples**: `widget-next`, `widget-svelte`
+- **Use cases**: Web applications, mobile apps, user-facing dashboards
+- **Security**: OAuth2 flow with user consent and secure token handling
 
 ## Projects
 
@@ -42,17 +72,17 @@ The following is provided without any promises or guarantees.
 |-----------|-----------------------------------|-----------------------------|
 | `dipsway` | Crypto trading platform           | [Link](https://dipsway.com) |
 
-## UI Widget
+## UI Widget Components
 
-| Name             | Description                       | Link                                |
-|------------------|-----------------------------------|-------------------------------------|
-| `@bluvo/nextjs`  | NextJS Embed UI widget component  | [Link](https://playground.bluvo.co) |
-| `@bluvo/react`   | React Embed UI widget component   | coming soon                         |    
-| `@bluvo/vue`     | Vue Embed UI widget component     | coming soon                         |
-| `@bluvo/svelte`  | Svelte Embed UI widget component  | coming soon                         |
-| `@bluvo/astro`   | Astro Embed UI widget component   | coming soon                         |
-| `@bluvo/vanilla` | Vanilla Embed UI widget component | coming soon                         |
-| `@bluvo/solid`   | Solid Embed UI widget component   | coming soon                         |
+| Name             | Description                       | Link                                                      |
+|------------------|-----------------------------------|-----------------------------------------------------------|
+| `@bluvo/nextjs`  | NextJS Embed UI widget component  | [NPM](https://www.npmjs.com/package/@bluvo/widget-react)  |
+| `@bluvo/react`   | React Embed UI widget component   | [NPM](https://www.npmjs.com/package/@bluvo/widget-react)  |    
+| `@bluvo/vue`     | Vue Embed UI widget component     | coming soon                                               |
+| `@bluvo/svelte`  | Svelte Embed UI widget component  | [NPM](https://www.npmjs.com/package/@bluvo/widget-svelte) |
+| `@bluvo/astro`   | Astro Embed UI widget component   | coming soon                                               |
+| `@bluvo/vanilla` | Vanilla Embed UI widget component | [NPM](https://www.npmjs.com/package/@bluvo/widget-vanjs)  |
+| `@bluvo/solid`   | Solid Embed UI widget component   | coming soon                                               |
 
 ## Papers, Blogs and Articles
 

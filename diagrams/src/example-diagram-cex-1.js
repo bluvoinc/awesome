@@ -10,18 +10,20 @@ export const initialNodes = [
 ];
 
 export const initialEdges = [
-    // 1. login
-    { id: 'e1', source: 'user',      target: 'oauth', type: 'animatedSVG', label: 'login' },
-    // 2. get token
-    { id: 'e2', source: 'oauth',     target: 'client', type: 'animatedSVG', label: 'token' },
-    // 3. pick coin & 2FA
-    { id: 'e3', source: 'user',      target: 'depositUI', type: 'animatedSVG', label: 'pick & 2FA' },
-    // 4. submit deposit/withdraw
-    { id: 'e4', source: 'depositUI', target: 'tx',      type: 'animatedSVG', label: 'submit' },
-    // 5. tx → success/failure
-    { id: 'e5', source: 'tx',        target: 'success', type: 'animatedSVG', label: '✓' },
-    { id: 'e6', source: 'tx',        target: 'failure', type: 'animatedSVG', label: '✖' },
-    // 6. notify UI
-    { id: 'e7', source: 'success',   target: 'depositUI', type: 'animatedSVG', label: 'notify' },
-    { id: 'e8', source: 'failure',   target: 'depositUI', type: 'animatedSVG', label: 'notify' },
+    // 1. login (user → oauth: horizontal, user is left)
+    { id: 'e1', source: 'user',      target: 'oauth',     sourceHandle: 'right', targetHandle: 'left',   type: 'animatedSVG', label: 'login' },
+    // 2. get token (oauth → client: horizontal, oauth is left)
+    { id: 'e2', source: 'oauth',     target: 'client',    sourceHandle: 'right', targetHandle: 'left',   type: 'animatedSVG', label: 'token' },
+    // 3. pick coin & 2FA (user → depositUI: vertical, user is above)
+    { id: 'e3', source: 'user',      target: 'depositUI', sourceHandle: 'bottom', targetHandle: 'top',   type: 'animatedSVG', label: 'pick & 2FA' },
+    // 4. submit deposit/withdraw (depositUI → tx: horizontal, depositUI is left)
+    { id: 'e4', source: 'depositUI', target: 'tx',        sourceHandle: 'right', targetHandle: 'left',   type: 'animatedSVG', label: 'submit' },
+    // 5. tx → success (horizontal, tx is left)
+    { id: 'e5', source: 'tx',        target: 'success',   sourceHandle: 'bottom', targetHandle: 'top',    type: 'animatedSVG', label: '✓' },
+    // 6. tx → failure (horizontal, tx is left)  
+    { id: 'e6', source: 'tx',        target: 'failure',   sourceHandle: 'right', targetHandle: 'left',   type: 'animatedSVG', label: '✖' },
+    // 7. success notify (success → depositUI: vertical/horizontal combo)
+    { id: 'e7', source: 'success',   target: 'depositUI', sourceHandle: 'left', targetHandle: 'bottom',  type: 'animatedSVG', label: 'notify' },
+    // 8. failure notify (failure → depositUI: vertical/horizontal combo)
+    { id: 'e8', source: 'failure',   target: 'depositUI', sourceHandle: 'bottom', targetHandle: 'right', type: 'animatedSVG', label: 'notify' },
 ];

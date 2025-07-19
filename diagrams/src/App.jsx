@@ -10,7 +10,8 @@ import '@xyflow/react/dist/style.css';
 
 import IconNode from './IconNode';
 import { AnimatedSVGEdge } from './AnimatedSVGEdge';
-import {initialEdges, initialNodes} from "./example-diagram-cex-1.js";
+import { initialEdges, initialNodes } from "./example-diagram-cex-1.js";
+import { updateEdgesWithOptimalHandles } from './handleUtils.js';
 
 const nodeTypes = { icon: IconNode };
 const edgeTypes = { animatedSVG: AnimatedSVGEdge };
@@ -25,6 +26,21 @@ export default function App() {
         nodesRef.current = nodes;
     }, [nodes]);
 
+    // Update edges with optimal handles when nodes change position
+    useEffect(() => {
+        const updatedEdges = updateEdgesWithOptimalHandles(edges, nodes);
+        // Only update if there are actual changes to prevent infinite loops
+        const hasChanges = updatedEdges.some((edge, index) => {
+            const currentEdge = edges[index];
+            return edge.sourceHandle !== currentEdge.sourceHandle || 
+                   edge.targetHandle !== currentEdge.targetHandle;
+        });
+        
+        if (hasChanges) {
+            setEdges(updatedEdges);
+        }
+    }, [nodes, setEdges]); // Removed edges from dependencies to prevent loops
+
     // Log current node positions every second
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -34,11 +50,39 @@ export default function App() {
         return () => clearInterval(intervalId);
     }, []);
 
-    const onConnect = (params) =>
-        setEdges((eds) => addEdge({ ...params, type: 'animatedSVG' }, eds));
+    const onConnect = (params) => {
+        const newEdge = { ...params, type: 'animatedSVG' };
+        // Calculate optimal handles for the new connection
+        const sourceNode = nodes.find(n => n.id === params.source);
+        const targetNode = nodes.find(n => n.id === params.target);
+        if (sourceNode && targetNode) {
+            const updatedEdgesWithNew = updateEdgesWithOptimalHandles([...edges, newEdge], nodes);
+            const optimizedNewEdge = updatedEdgesWithNew[updatedEdgesWithNew.length - 1];
+            setEdges((eds) => addEdge(optimizedNewEdge, eds));
+        } else {
+            setEdges((eds) => addEdge(newEdge, eds));
+        }
+    };
 
     return (
         <div style={{ width: '100vw', height: '100vh', background: '#000' }}>
+            {/* SVG definitions for arrowheads */}
+            <svg style={{ position: 'absolute', width: 0, height: 0 }}>
+                <defs>
+                    <marker
+                        id="arrowhead"
+                        markerUnits="strokeWidth"
+                        markerWidth="12"
+                        markerHeight="12"
+                        refX="10"
+                        refY="5"
+                        orient="auto"
+                    >
+                        <path d="M0,0 L0,10 L10,5 Z" fill="#0FB8F9" />
+                    </marker>
+                </defs>
+            </svg>
+            
             <ReactFlow
                 nodes={nodes}
                 edges={edges}

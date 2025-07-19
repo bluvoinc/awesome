@@ -13,12 +13,15 @@ import { AnimatedSVGEdge } from './AnimatedSVGEdge';
 import { initialEdges, initialNodes } from "./example-diagram-cex-1.js";
 import { updateEdgesWithOptimalHandles } from './handleUtils.js';
 
-const nodeTypes = { icon: IconNode };
 const edgeTypes = { animatedSVG: AnimatedSVGEdge };
 
 export default function App() {
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+    
+    const nodeTypes = { 
+        icon: (props) => <IconNode {...props} edges={edges} />
+    };
     const nodesRef = useRef(nodes);
 
     // Keep ref up to date with latest nodes
@@ -78,7 +81,7 @@ export default function App() {
                         refY="2.5"
                         orient="auto"
                     >
-                        <path d="M0,0 L0,5 L5,2.5 Z" fill="#0FB8F9" />
+                        <path d="M0,0 L0,5 L5,2.5 Z" fill="rgba(15, 184, 249, 0.8)" />
                     </marker>
 
                 </defs>

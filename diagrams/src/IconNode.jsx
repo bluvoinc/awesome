@@ -4,16 +4,29 @@ import { motion } from 'framer-motion';
 import { Handle, Position } from '@xyflow/react';
 import {Icon_map, ICON_TITLES} from "./icon_map.jsx";
 
-export default function IconNode({ id }) {
+export default function IconNode({ id, edges }) {
+    // Calculate which handles have connections
+    const connectedHandles = new Set();
+    
+    if (edges) {
+        edges.forEach(edge => {
+            if (edge.source === id) {
+                connectedHandles.add(edge.sourceHandle);
+            }
+            if (edge.target === id) {
+                connectedHandles.add(edge.targetHandle);
+            }
+        });
+    }
     return (
         <>
             {/* Top and Bottom Handles */}
-            <Handle type="target" position={Position.Top}    id="top"    style={{ background: '#0FB8F9' }} />
-            <Handle type="source" position={Position.Bottom} id="bottom" style={{ background: '#0FB8F9' }} />
+            <Handle type="target" position={Position.Top}    id="top"    style={{ background: '#0FB8F9', opacity: connectedHandles.has('top') ? 1 : 0 }} />
+            <Handle type="source" position={Position.Bottom} id="bottom" style={{ background: '#0FB8F9', opacity: connectedHandles.has('bottom') ? 1 : 0 }} />
 
             {/* Left and Right Handles */}
-            <Handle type="target" position={Position.Left}  id="left"  style={{ background: '#0FB8F9' }} />
-            <Handle type="source" position={Position.Right} id="right" style={{ background: '#0FB8F9' }} />
+            <Handle type="target" position={Position.Left}  id="left"  style={{ background: '#0FB8F9', opacity: connectedHandles.has('left') ? 1 : 0 }} />
+            <Handle type="source" position={Position.Right} id="right" style={{ background: '#0FB8F9', opacity: connectedHandles.has('right') ? 1 : 0 }} />
 
             {/* Node Content */}
             <div className="flex flex-col items-center">
@@ -25,7 +38,7 @@ export default function IconNode({ id }) {
                         width: 64, height: 64, borderRadius: '50%',
                         background: '#1A202C', display: 'flex',
                         alignItems: 'center', justifyContent: 'center',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.85)',
                         border: '2px solid #0FB8F9',
                     }}
                 >

@@ -26,11 +26,10 @@ export function AnimatedSVGEdge({
                 id={id}
                 d={edgePath}
                 fill="none"
-                stroke="#0FB8F9"
-                strokeWidth={2}
-                markerEnd="url(#arrowhead)"
+                stroke="rgba(15, 184, 249, 0.2)"
+                strokeWidth={3}
             />
-            <circle r={5} fill="#0FB8F9">
+            <circle r={5} fill="rgba(15, 184, 249, 1)">
                 <animateMotion dur="2s" repeatCount="indefinite">
                     <mpath xlinkHref={`#${id}`} />
                 </animateMotion>

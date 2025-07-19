@@ -72,14 +72,15 @@ export default function App() {
                     <marker
                         id="arrowhead"
                         markerUnits="strokeWidth"
-                        markerWidth="12"
-                        markerHeight="12"
-                        refX="10"
-                        refY="5"
+                        markerWidth="6"
+                        markerHeight="6"
+                        refX="5"
+                        refY="2.5"
                         orient="auto"
                     >
-                        <path d="M0,0 L0,10 L10,5 Z" fill="#0FB8F9" />
+                        <path d="M0,0 L0,5 L5,2.5 Z" fill="#0FB8F9" />
                     </marker>
+
                 </defs>
             </svg>
             

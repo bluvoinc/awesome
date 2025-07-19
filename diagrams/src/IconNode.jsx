@@ -31,9 +31,9 @@ export default function IconNode({ id }) {
                 >
                     {Icon_map[id]}
                 </motion.div>
-                <span style={{ color: '#EDF2F7', marginTop: 4 }}>
-          {ICON_TITLES[id]}
-        </span>
+                <span style={{ color: '#EDF2F7', marginTop: 4, position:'absolute', fontSize: 14, textAlign: 'center' }}>
+                    {ICON_TITLES[id]}
+                </span>
             </div>
         </>
     );

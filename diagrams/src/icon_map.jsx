@@ -1,0 +1,56 @@
+import {
+    FaUser,
+    FaLock,
+    FaDatabase,
+    FaDesktop,
+    FaKey,
+    FaWallet,
+    FaShieldAlt,
+    FaExchangeAlt,
+    FaQuestionCircle,
+    FaBell,
+    FaCheckCircle,
+    FaTimesCircle,
+} from 'react-icons/fa';
+
+export const Icon_map = {
+    user:         <FaUser        size={24} />,
+    oauthServer:  <FaLock        size={24} />,
+    db:           <FaDatabase    size={24} />,
+    clientApp:    <FaDesktop     size={24} />,
+    ottService:   <FaKey         size={24} />,
+    depositUI:    <FaWallet      size={24} />,
+    twoFA:        <FaShieldAlt   size={24} />,
+    txService:    <FaExchangeAlt size={24} />,
+    cond:         <FaQuestionCircle size={24} />,
+    notification: <FaBell        size={24} />,
+    endSuccess:   <FaCheckCircle size={24} />,
+    endFailure:   <FaTimesCircle size={24} />,
+
+    oauth:     <FaLock        size={24} />,
+    client:    <FaDesktop     size={24} />,
+    tx:        <FaExchangeAlt size={24} />,
+    success:   <FaCheckCircle size={24} />,
+    failure:   <FaTimesCircle size={24} />,
+};
+
+export const ICON_TITLES = {
+    user:         'User',
+    oauthServer:  'OAuth2 Server',
+    db:           'Token DB',
+    clientApp:    'Client App',
+    ottService:   'OTT Service',
+    depositUI:    'Deposit UI',
+    twoFA:        '2FA Service',
+    txService:    'Transaction Service',
+    cond:         'Result?',
+    notification: 'Notifier',
+    endSuccess:   'Success',
+    endFailure:   'Failure',
+
+    oauth:     'OAuth2 Server',
+    client:    'Client App',
+    tx:        'Transaction Service',
+    success:   'Success',
+    failure:   'Failure',
+};

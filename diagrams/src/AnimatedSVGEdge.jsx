@@ -30,6 +30,10 @@ export function AnimatedSVGEdge({
     const isReverse = data?.reverse === true;
     // Check if this is an error edge
     const isError = data?.error === true;
+    // Get speed factor (default 1 if undefined)
+    const speed = data?.speed || 1;
+    // Calculate animation duration (base duration 1s divided by speed factor)
+    const animationDuration = `${1 / speed}s`;
 
     return (
         <g className="animated-edge">
@@ -44,7 +48,7 @@ export function AnimatedSVGEdge({
                 // Red X marker for error edges
                 <g fill="#EF4444">
                     <animateMotion 
-                        dur="4s"
+                        dur={animationDuration}
                         repeatCount="indefinite"
                         keyTimes={isReverse ? "0;1" : "0;1"}
                         keyPoints={isReverse ? "1;0" : "0;1"}
@@ -54,7 +58,7 @@ export function AnimatedSVGEdge({
                             attributeName="transform"
                             type="rotate"
                             values="0;360"
-                            dur="4s"
+                            dur={animationDuration}
                             repeatCount="indefinite"
                         />
                     </animateMotion>
@@ -66,7 +70,7 @@ export function AnimatedSVGEdge({
                 // Normal circle marker
                 <circle r={5} fill={strokeColor}>
                     <animateMotion 
-                        dur="1s" 
+                        dur={animationDuration} 
                         repeatCount="indefinite"
                         keyTimes={isReverse ? "0;1" : "0;1"}
                         keyPoints={isReverse ? "1;0" : "0;1"}

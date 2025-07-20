@@ -13,7 +13,7 @@ import InvisibleNode from './InvisibleNode';
 import TitleNode from './TitleNode';
 import { AnimatedSVGEdge } from './AnimatedSVGEdge';
 import { DashedAnimatedEdge } from './DashedAnimatedEdge';
-import { initialEdges, initialNodes } from "./example-diagram-cex-2.js";
+import { initialEdges, initialNodes } from "./example-diagram-cex-3.js";
 import { updateEdgesWithOptimalHandles } from './handleUtils.js';
 
 const edgeTypes = { 

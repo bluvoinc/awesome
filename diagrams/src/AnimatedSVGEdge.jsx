@@ -28,6 +28,8 @@ export function AnimatedSVGEdge({
 
     // Check if animation should be reversed
     const isReverse = data?.reverse === true;
+    // Check if this is an error edge
+    const isError = data?.error === true;
 
     return (
         <g className="animated-edge">
@@ -38,16 +40,41 @@ export function AnimatedSVGEdge({
                 stroke={fillColor}
                 strokeWidth={3}
             />
-            <circle r={5} fill={strokeColor}>
-                <animateMotion 
-                    dur="1s" 
-                    repeatCount="indefinite"
-                    keyTimes={isReverse ? "0;1" : "0;1"}
-                    keyPoints={isReverse ? "1;0" : "0;1"}
-                >
-                    <mpath xlinkHref={`#${id}`} />
-                </animateMotion>
-            </circle>
+            {isError ? (
+                // Red X marker for error edges
+                <g fill="#EF4444">
+                    <animateMotion 
+                        dur="4s"
+                        repeatCount="indefinite"
+                        keyTimes={isReverse ? "0;1" : "0;1"}
+                        keyPoints={isReverse ? "1;0" : "0;1"}
+                    >
+                        <mpath xlinkHref={`#${id}`} />
+                        <animateTransform
+                            attributeName="transform"
+                            type="rotate"
+                            values="0;360"
+                            dur="4s"
+                            repeatCount="indefinite"
+                        />
+                    </animateMotion>
+                    {/* X shape made of two lines (2x bigger) */}
+                    <line x1="-8" y1="-8" x2="8" y2="8" stroke="#EF4444" strokeWidth="3" strokeLinecap="round" />
+                    <line x1="-8" y1="8" x2="8" y2="-8" stroke="#EF4444" strokeWidth="3" strokeLinecap="round" />
+                </g>
+            ) : (
+                // Normal circle marker
+                <circle r={5} fill={strokeColor}>
+                    <animateMotion 
+                        dur="1s" 
+                        repeatCount="indefinite"
+                        keyTimes={isReverse ? "0;1" : "0;1"}
+                        keyPoints={isReverse ? "1;0" : "0;1"}
+                    >
+                        <mpath xlinkHref={`#${id}`} />
+                    </animateMotion>
+                </circle>
+            )}
         </g>
     );
 }

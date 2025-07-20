@@ -115,7 +115,7 @@ export const initialNodes = [
         id: 'middleman_b',
         type: 'icon',
         data: { label: 'Malicious Actor', color: '#EF4444' },
-        position: { x: START_X + H_STEP, y: START_Y2 - 125 }
+        position: { x: START_X, y: START_Y2 - 125 }
     },
     {
         id: 'http_call_bot',
@@ -285,7 +285,7 @@ export const initialEdges = [
         targetHandle: 'top',
         type: 'animatedSVG',
         label: 'attempt to steal',
-        data: { color: '#EF4444', error: true }
+        data: { color: '#EF4444', error: true, reverse: true }
     },
     // HTTP call to Exchange
     {

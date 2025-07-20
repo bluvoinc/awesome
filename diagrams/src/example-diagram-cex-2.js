@@ -15,7 +15,7 @@ export const initialNodes = [
         type: 'title',
         draggable: false,
         selectable: false,
-        data: { label: 'Standard APIKey Storage (Vulnerable)' },
+        data: { label: 'Standard APIKey Storage' },
         position: { x: START_X + H_STEP, y: START_Y1 - 200 },
     },
     {

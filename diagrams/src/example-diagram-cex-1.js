@@ -28,6 +28,28 @@ export const initialNodes = [
     // --- Invisible nodes for vertical divisor ---
     { id: 'divisor_top',    type: 'invisible', data: {}, position: { x: LEFT_X + H_GAP * 0.75, y: START_Y - 20 } },
     { id: 'divisor_bottom', type: 'invisible', data: {}, position: { x: LEFT_X + H_GAP * 0.75, y: START_Y + V_GAP * 5.5 + 20 } },
+
+    // --- Title nodes ---
+    {
+        id: 'title-left',
+        type: 'title',
+        draggable: false,
+        selectable: false,
+        data: {
+            label: 'CEX Deposits OAuth2 Flow',
+        },
+        position: { x: LEFT_X - 50, y: START_Y - 80 },
+    },
+    {
+        id: 'title-right',
+        type: 'title',
+        draggable: false,
+        selectable: false,
+        data: {
+            label: 'CEX Deposit with Bluvo',
+        },
+        position: { x: RIGHT_X - 50, y: START_Y - 80 },
+    },
 ];
 
 export const initialEdges = [

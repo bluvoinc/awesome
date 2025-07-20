@@ -24,6 +24,10 @@ export const initialNodes = [
     // branch out success/failure
     { id: 'success_b', type: 'icon', data: { label: 'Success ✔', color: '#F97316' },    position: { x: RIGHT_X - H_GAP / 3, y: START_Y + V_GAP * 2 } },
     { id: 'failure_b', type: 'icon', data: { label: 'Failure ✖', color: '#F97316' },    position: { x: RIGHT_X + H_GAP / 3, y: START_Y + V_GAP * 2 } },
+
+    // --- Invisible nodes for vertical divisor ---
+    { id: 'divisor_top',    type: 'invisible', data: {}, position: { x: LEFT_X + H_GAP * 0.75, y: START_Y - 20 } },
+    { id: 'divisor_bottom', type: 'invisible', data: {}, position: { x: LEFT_X + H_GAP * 0.75, y: START_Y + V_GAP * 5.5 + 20 } },
 ];
 
 export const initialEdges = [
@@ -36,12 +40,15 @@ export const initialEdges = [
     { id: 'e5', source: 'tx',        target: 'success',   sourceHandle: 'bottom', targetHandle: 'top',    type: 'animatedSVG', label: '✓'          },
     { id: 'e6', source: 'tx',        target: 'failure',   sourceHandle: 'right',  targetHandle: 'left',   type: 'animatedSVG', label: '✖'          },
     // notifications back
-    { id: 'e7', source: 'success',   target: 'depositUI', sourceHandle: 'top',    targetHandle: 'left',   type: 'animatedSVG', label: 'notify'     },
-    { id: 'e8', source: 'failure',   target: 'depositUI', sourceHandle: 'left',   targetHandle: 'right',  type: 'animatedSVG', label: 'notify'     },
+    { id: 'e7', source: 'success',   target: 'depositUI', sourceHandle: 'right',  targetHandle: 'left',   type: 'animatedSVG', label: 'notify'     },
+    { id: 'e8', source: 'failure',   target: 'depositUI', sourceHandle: 'bottom', targetHandle: 'left',   type: 'animatedSVG', label: 'notify'     },
 
     // --- Bluvo Widget (vertical) ---
     { id: 'e1_b', source: 'user_b',   target: 'widget',    sourceHandle: 'bottom', targetHandle: 'top',    type: 'animatedSVG', label: 'pick & 2FA', data: { color: '#F97316' } },
     // branch
     { id: 'e2_b', source: 'widget',   target: 'success_b', sourceHandle: 'bottom', targetHandle: 'top',    type: 'animatedSVG', label: '✓',          data: { color: '#F97316' } },
     { id: 'e3_b', source: 'widget',   target: 'failure_b', sourceHandle: 'right',  targetHandle: 'left',   type: 'animatedSVG', label: '✖',          data: { color: '#F97316' } },
+
+    // --- Vertical Divisor ---
+    { id: 'divisor', source: 'divisor_top', target: 'divisor_bottom', sourceHandle: 'bottom', targetHandle: 'top', type: 'dashedAnimated', data: { color: '#6B7280' } },
 ];

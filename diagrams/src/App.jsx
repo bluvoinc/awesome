@@ -9,18 +9,24 @@ import {
 import '@xyflow/react/dist/style.css';
 
 import IconNode from './IconNode';
+import InvisibleNode from './InvisibleNode';
 import { AnimatedSVGEdge } from './AnimatedSVGEdge';
+import { DashedAnimatedEdge } from './DashedAnimatedEdge';
 import { initialEdges, initialNodes } from "./example-diagram-cex-1.js";
 import { updateEdgesWithOptimalHandles } from './handleUtils.js';
 
-const edgeTypes = { animatedSVG: AnimatedSVGEdge };
+const edgeTypes = { 
+    animatedSVG: AnimatedSVGEdge,
+    dashedAnimated: DashedAnimatedEdge 
+};
 
 export default function App() {
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
     
     const nodeTypes = { 
-        icon: (props) => <IconNode {...props} edges={edges} />
+        icon: (props) => <IconNode {...props} edges={edges} />,
+        invisible: InvisibleNode
     };
     const nodesRef = useRef(nodes);
 

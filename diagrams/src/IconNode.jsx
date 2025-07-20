@@ -21,12 +21,12 @@ export default function IconNode({ id, edges }) {
     
     // Define colors based on node type
     const getNodeColors = (nodeId) => {
-        if (nodeId === 'success') {
+        if (nodeId.includes('success')) {
             return {
                 border: '#10B981', // green-500
                 handle: '#10B981'
             };
-        } else if (nodeId === 'failure') {
+        } else if (nodeId.includes('failure')) {
             return {
                 border: '#EF4444', // red-500
                 handle: '#EF4444'

@@ -64,7 +64,7 @@ export default function IconNode({ id, edges, data }) {
                     animate={{ scale: 1,   opacity: 1 }}
                     transition={{ duration: 0.5, ease: 'easeOut' }}
                     style={{
-                        width: 64, height: 64, borderRadius: '50%',
+                        width: 50, height: 50, borderRadius: '50%',
                         background: '#1A202C', display: 'flex',
                         alignItems: 'center', justifyContent: 'center',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.85)',

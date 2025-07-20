@@ -7,6 +7,10 @@ const LEFT_X  = 100;
 const RIGHT_X = LEFT_X + H_GAP*1.5;
 const START_Y = 50;
 
+// Calculate center positions for titles
+const LEFT_CENTER = LEFT_X;  // Center of left diagram group
+const RIGHT_CENTER = RIGHT_X;  // Center of right diagram group
+
 export const initialNodes = [
     // --- OAuth2 CEX (left) ---
     { id: 'user',      type: 'icon', data: { label: 'User' },        position: { x: LEFT_X,  y: START_Y + V_GAP * 0 } },
@@ -38,7 +42,7 @@ export const initialNodes = [
         data: {
             label: 'CEX Deposits OAuth2 Flow',
         },
-        position: { x: LEFT_X - 50, y: START_Y - 80 },
+        position: { x: LEFT_CENTER - 90, y: START_Y - 80 },
     },
     {
         id: 'title-right',
@@ -48,7 +52,7 @@ export const initialNodes = [
         data: {
             label: 'CEX Deposit with Bluvo',
         },
-        position: { x: RIGHT_X - 50, y: START_Y - 80 },
+        position: { x: RIGHT_CENTER - 75, y: START_Y - 80 },
     },
 ];
 

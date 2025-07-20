@@ -36,7 +36,7 @@ export function AnimatedSVGEdge({
                 strokeWidth={3}
             />
             <circle r={5} fill={strokeColor}>
-                <animateMotion dur="2s" repeatCount="indefinite">
+                <animateMotion dur="1s" repeatCount="indefinite">
                     <mpath xlinkHref={`#${id}`} />
                 </animateMotion>
             </circle>

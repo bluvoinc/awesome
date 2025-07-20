@@ -12,6 +12,11 @@ import {
     FaCheckCircle,
     FaTimesCircle,
     FaPuzzlePiece,
+    FaServer,        // new
+    FaDownload,      // new
+    FaUserSecret,    // new
+    FaSignature,     // new
+    FaLayerGroup,    // new
 } from 'react-icons/fa';
 
 export const Icon_map = {
@@ -39,10 +44,20 @@ export const Icon_map = {
     // Bluvo flow
     widget:    <FaPuzzlePiece     size={24} />,
     ott:       <FaKey             size={24} />,
-    user_b:    <FaUser            size={24} />,        // missing
-    depositUI_b: <FaWallet        size={24} />,        // missing
-    success_b: <FaCheckCircle     size={24} />,        // missing
-    failure_b: <FaTimesCircle     size={24} />,        // missing
+    user_b:    <FaUser            size={24} />,
+    depositUI_b: <FaWallet        size={24} />,
+    success_b: <FaCheckCircle     size={24} />,
+    failure_b: <FaTimesCircle     size={24} />,
+
+    // New diagram nodes
+    service:   <FaServer          size={24} />,
+    loader:    <FaDownload        size={24} />,
+    middleman: <FaUserSecret      size={24} />,
+    service_b: <FaServer          size={24} />,
+    signer:    <FaSignature       size={24} />,
+    mpc1:      <FaLayerGroup      size={24} />,
+    mpc2:      <FaLayerGroup      size={24} />,
+    mpc3:      <FaLayerGroup      size={24} />,
 };
 
 export const ICON_TITLES = {
@@ -70,8 +85,18 @@ export const ICON_TITLES = {
     // Bluvo flow
     widget:    'Bluvo Widget',
     ott:       'OTT Endpoint',
-    user_b:    'User',            // missing
-    depositUI_b: 'Deposit UI',    // missing
-    success_b: 'Success',         // missing
-    failure_b: 'Failure',         // missing
+    user_b:    'User',
+    depositUI_b: 'Deposit UI',
+    success_b: 'Success',
+    failure_b: 'Failure',
+
+    // New diagram nodes
+    service:   'Service',
+    loader:    'Loader Function',
+    middleman: 'Malicious Actor',
+    service_b: 'Service',
+    signer:    'Signer Node',
+    mpc1:      'MPC Node A',
+    mpc2:      'MPC Node B',
+    mpc3:      'MPC Node C',
 };

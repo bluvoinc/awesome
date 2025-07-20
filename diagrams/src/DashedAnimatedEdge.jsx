@@ -29,13 +29,13 @@ export function DashedAnimatedEdge({
                 fill="none"
                 stroke={edgeColor}
                 strokeWidth={2}
-                strokeDasharray="8,4"
+                strokeDasharray="8,8" // 8px dash, 8px gap
                 opacity={0.6}
             >
                 <animate
                     attributeName="stroke-dashoffset"
-                    values="0;12"
-                    dur="0.5s"
+                    values="0;-16" // 8 + 8
+                    dur="1s"
                     repeatCount="indefinite"
                 />
             </path>

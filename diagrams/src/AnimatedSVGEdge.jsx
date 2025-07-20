@@ -26,6 +26,9 @@ export function AnimatedSVGEdge({
     const strokeColor = `rgba(${parseInt(edgeColor.slice(1, 3), 16)}, ${parseInt(edgeColor.slice(3, 5), 16)}, ${parseInt(edgeColor.slice(5, 7), 16)}, 0.75)`;
     const fillColor = `rgba(${parseInt(edgeColor.slice(1, 3), 16)}, ${parseInt(edgeColor.slice(3, 5), 16)}, ${parseInt(edgeColor.slice(5, 7), 16)}, 0.2)`;
 
+    // Check if animation should be reversed
+    const isReverse = data?.reverse === true;
+
     return (
         <g className="animated-edge">
             <path
@@ -36,7 +39,12 @@ export function AnimatedSVGEdge({
                 strokeWidth={3}
             />
             <circle r={5} fill={strokeColor}>
-                <animateMotion dur="1s" repeatCount="indefinite">
+                <animateMotion 
+                    dur="1s" 
+                    repeatCount="indefinite"
+                    keyTimes={isReverse ? "0;1" : "0;1"}
+                    keyPoints={isReverse ? "1;0" : "0;1"}
+                >
                     <mpath xlinkHref={`#${id}`} />
                 </animateMotion>
             </circle>

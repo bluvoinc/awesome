@@ -12,11 +12,11 @@ import {
     FaCheckCircle,
     FaTimesCircle,
     FaPuzzlePiece,
-    FaServer,        // new
-    FaDownload,      // new
-    FaUserSecret,    // new
-    FaSignature,     // new
-    FaLayerGroup,    // new
+    FaServer,
+    FaDownload,
+    FaUserSecret,
+    FaSignature,
+    FaLayerGroup,
 } from 'react-icons/fa';
 
 export const Icon_map = {
@@ -58,6 +58,10 @@ export const Icon_map = {
     mpc1:      <FaLayerGroup      size={24} />,
     mpc2:      <FaLayerGroup      size={24} />,
     mpc3:      <FaLayerGroup      size={24} />,
+    mpc4:      <FaLayerGroup      size={24} />, // Added for MPC Node D
+    middleman_b: <FaUserSecret    size={24} />, // Added for bottom flow Malicious Actor
+    http_call_top: <FaExchangeAlt size={24} />, // Added for top flow Exchange
+    http_call_bot: <FaExchangeAlt size={24} />, // Added for bottom flow Exchange
 };
 
 export const ICON_TITLES = {
@@ -99,4 +103,8 @@ export const ICON_TITLES = {
     mpc1:      'MPC Node A',
     mpc2:      'MPC Node B',
     mpc3:      'MPC Node C',
+    mpc4:      'MPC Node D',           // Added for MPC Node D
+    middleman_b: 'Malicious Actor',    // Added for bottom flow Malicious Actor
+    http_call_top: '_exchange',        // Added for top flow Exchange
+    http_call_bot: 'Exchange',         // Added for bottom flow Exchange
 };

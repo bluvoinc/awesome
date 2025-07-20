@@ -16,7 +16,7 @@ export const initialNodes = [
         draggable: false,
         selectable: false,
         data: { label: 'Standard APIKey Storage' },
-        position: { x: START_X + H_STEP, y: START_Y1 - 200 },
+        position: { x: START_X, y: START_Y1 - 200 },
     },
     {
         id: 'title-bot',
@@ -24,7 +24,7 @@ export const initialNodes = [
         draggable: false,
         selectable: false,
         data: { label: 'Bluvo MPC‑Backed Key Storage' },
-        position: { x: START_X + H_STEP, y: START_Y2 - 200 },
+        position: { x: START_X, y: START_Y2 - 200 },
     },
 
     // ─── Top Flow: Classic Storage ────────────────────────────────────────────

@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Handle, Position } from '@xyflow/react';
 import {Icon_map, ICON_TITLES} from "./icon_map.jsx";
 
-export default function IconNode({ id, edges }) {
+export default function IconNode({ id, edges, data }) {
     // Calculate which handles have connections
     const connectedHandles = new Set();
     
@@ -19,26 +19,34 @@ export default function IconNode({ id, edges }) {
         });
     }
     
-    // Define colors based on node type
-    const getNodeColors = (nodeId) => {
-        if (nodeId.includes('success')) {
+    // Use color from data prop or fallback to default colors
+    const getNodeColors = (nodeId, nodeData) => {
+        if (nodeData?.color) {
             return {
-                border: '#10B981', // green-500
-                handle: '#10B981'
-            };
-        } else if (nodeId.includes('failure')) {
-            return {
-                border: '#EF4444', // red-500
-                handle: '#EF4444'
+                border: nodeData.color,
+                handle: nodeData.color
             };
         }
+        
+        // Fallback to legacy behavior
+        // if (nodeId.includes('success')) {
+        //     return {
+        //         border: '#10B981', // green-500
+        //         handle: '#10B981'
+        //     };
+        // } else if (nodeId.includes('failure')) {
+        //     return {
+        //         border: '#EF4444', // red-500
+        //         handle: '#EF4444'
+        //     };
+        // }
         return {
             border: '#0FB8F9', // default blue
             handle: '#0FB8F9'
         };
     };
     
-    const colors = getNodeColors(id);
+    const colors = getNodeColors(id, data);
     return (
         <>
             {/* Top and Bottom Handles */}

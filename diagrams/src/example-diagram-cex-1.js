@@ -4,7 +4,7 @@
 const H_GAP = 300;  // horizontal gap between columns
 const V_GAP = 135;  // vertical gap between steps
 const LEFT_X  = 100;
-const RIGHT_X = LEFT_X + H_GAP*2;
+const RIGHT_X = LEFT_X + H_GAP*1.5;
 const START_Y = 50;
 
 export const initialNodes = [
@@ -19,11 +19,11 @@ export const initialNodes = [
     { id: 'failure',   type: 'icon', data: { label: 'Failure ✖' },   position: { x: LEFT_X + H_GAP / 3,  y: START_Y + V_GAP * 5 } },
 
     // --- Bluvo Widget (right) (Those nodes should be orange) ---
-    { id: 'user_b',    type: 'icon', data: { label: 'User' },         position: { x: RIGHT_X, y: START_Y + V_GAP * 0 } },
-    { id: 'widget',    type: 'icon', data: { label: 'Bluvo Widget' }, position: { x: RIGHT_X, y: START_Y + V_GAP * 1 } },
+    { id: 'user_b',    type: 'icon', data: { label: 'User', color: '#F97316' },         position: { x: RIGHT_X, y: START_Y + V_GAP * 0 } },
+    { id: 'widget',    type: 'icon', data: { label: 'Bluvo Widget', color: '#F97316' }, position: { x: RIGHT_X, y: START_Y + V_GAP * 1 } },
     // branch out success/failure
-    { id: 'success_b', type: 'icon', data: { label: 'Success ✔' },    position: { x: RIGHT_X - H_GAP / 3, y: START_Y + V_GAP * 2 } },
-    { id: 'failure_b', type: 'icon', data: { label: 'Failure ✖' },    position: { x: RIGHT_X + H_GAP / 3, y: START_Y + V_GAP * 2 } },
+    { id: 'success_b', type: 'icon', data: { label: 'Success ✔', color: '#F97316' },    position: { x: RIGHT_X - H_GAP / 3, y: START_Y + V_GAP * 2 } },
+    { id: 'failure_b', type: 'icon', data: { label: 'Failure ✖', color: '#F97316' },    position: { x: RIGHT_X + H_GAP / 3, y: START_Y + V_GAP * 2 } },
 ];
 
 export const initialEdges = [
@@ -40,8 +40,8 @@ export const initialEdges = [
     { id: 'e8', source: 'failure',   target: 'depositUI', sourceHandle: 'left',   targetHandle: 'right',  type: 'animatedSVG', label: 'notify'     },
 
     // --- Bluvo Widget (vertical) ---
-    { id: 'e1_b', source: 'user_b',   target: 'widget',    sourceHandle: 'bottom', targetHandle: 'top',    type: 'animatedSVG', label: 'pick & 2FA' },
+    { id: 'e1_b', source: 'user_b',   target: 'widget',    sourceHandle: 'bottom', targetHandle: 'top',    type: 'animatedSVG', label: 'pick & 2FA', data: { color: '#F97316' } },
     // branch
-    { id: 'e2_b', source: 'widget',   target: 'success_b', sourceHandle: 'bottom', targetHandle: 'top',    type: 'animatedSVG', label: '✓'          },
-    { id: 'e3_b', source: 'widget',   target: 'failure_b', sourceHandle: 'right',  targetHandle: 'left',   type: 'animatedSVG', label: '✖'          },
+    { id: 'e2_b', source: 'widget',   target: 'success_b', sourceHandle: 'bottom', targetHandle: 'top',    type: 'animatedSVG', label: '✓',          data: { color: '#F97316' } },
+    { id: 'e3_b', source: 'widget',   target: 'failure_b', sourceHandle: 'right',  targetHandle: 'left',   type: 'animatedSVG', label: '✖',          data: { color: '#F97316' } },
 ];

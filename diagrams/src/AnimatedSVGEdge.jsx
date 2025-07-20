@@ -10,6 +10,7 @@ export function AnimatedSVGEdge({
                                     targetX,
                                     targetY,
                                     targetPosition,
+                                    data,
                                 }) {
     const [edgePath] = getBezierPath({
         sourceX,
@@ -20,16 +21,21 @@ export function AnimatedSVGEdge({
         targetPosition,
     });
 
+    // Use color from data prop or default blue
+    const edgeColor = data?.color || '#0FB8F9';
+    const strokeColor = `rgba(${parseInt(edgeColor.slice(1, 3), 16)}, ${parseInt(edgeColor.slice(3, 5), 16)}, ${parseInt(edgeColor.slice(5, 7), 16)}, 0.75)`;
+    const fillColor = `rgba(${parseInt(edgeColor.slice(1, 3), 16)}, ${parseInt(edgeColor.slice(3, 5), 16)}, ${parseInt(edgeColor.slice(5, 7), 16)}, 0.2)`;
+
     return (
         <g className="animated-edge">
             <path
                 id={id}
                 d={edgePath}
                 fill="none"
-                stroke="rgba(15, 184, 249, 0.2)"
+                stroke={fillColor}
                 strokeWidth={3}
             />
-            <circle r={5} fill="rgba(15, 184, 249, 1)">
+            <circle r={5} fill={strokeColor}>
                 <animateMotion dur="2s" repeatCount="indefinite">
                     <mpath xlinkHref={`#${id}`} />
                 </animateMotion>

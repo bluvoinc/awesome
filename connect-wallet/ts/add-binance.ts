@@ -47,12 +47,14 @@ const BINANCE_API_SECRET = '<your-binance-account-api-secret>';
     });
 
     const walletId = crypto.randomUUID(); // Pick a unique wallet ID
+    const idem = crypto.randomUUID(); // Optional: provide an idempotency key to avoid duplicate requests
 
     const {workflowRunId} = await client
             .wallet
             .connect(
                 'binance', // See full list of supported exchanges: https://docs.bluvo.co/supported-exchanges
                 walletId,
+                idem, // Optional: idempotency key to avoid duplicate requests
                 {
                     apiKey: BINANCE_API_KEY,//'<your-binance-account-api-key>',     // Your Binance API key
                     apiSecret: BINANCE_API_SECRET,//'<your-binance-account-api-secret>', // Your Binance API secret
@@ -63,7 +65,7 @@ const BINANCE_API_SECRET = '<your-binance-account-api-secret>';
     console.log('🚀 Add wallet request initiated:', workflowRunId);
 
     // Poll for workflow completion (server-side implementation) - for client-side applications, we recommend using the socket stream for real-time notifications.
-    await pollWorkflowStatus(client, workflowRunId);
+    await pollWorkflowStatus(client, workflowRunId, 'connect');
 
     console.log('✅ Wallet connected successfully!');
 

@@ -3,6 +3,7 @@
  * Reusable helper functions for API examples
  */
 
+import { BluvoClient } from "@bluvo/sdk-ts";
 import { GetWorkflow200ResponseStepsInnerStateEnum } from "@bluvo/sdk-ts/generated/models/GetWorkflow200ResponseStepsInner";
 
 /**
@@ -104,38 +105,35 @@ export const put = async (
  * @returns Promise that resolves with final workflow status
  */
 export const pollWorkflowStatus = async (
-  client: any,
+  client: BluvoClient,
   workflowRunId: string,
+  workflowType: 'connect' | 'withdraw' | 'oauth2',
   pollIntervalMs: number = 3000
 ) => {
   while (true) {
-    const status = await client.workflow.get(workflowRunId);
+    const status = await client.workflow
+        .get(
+            workflowRunId,
+            workflowType
+        );
     
     console.log(
       '⏳ Polling workflow status:',
-      status.steps.map((step: any) => step.name).join(', ')
+      status
     );
 
-    // Check if any step failed
-    const hasFailedStep = status.steps.some(
-      (step: any) => step.state !== GetWorkflow200ResponseStepsInnerStateEnum.StepSuccess
-    );
-    
-    if (hasFailedStep) {
-      console.error('❌ Workflow failed:', status.steps);
-      throw new Error('Workflow execution failed');
-    }
-
-    // Check if workflow completed successfully
-    const isCompleted = status.steps.some(
-      (step: any) =>
-        step.isEnd &&
-        step.state === GetWorkflow200ResponseStepsInnerStateEnum.StepSuccess
-    );
+    const workflowStatus = status.details.status;
+    const isCompleted = workflowStatus === 'complete';
+    const isRunning = ['queued', 'running'].indexOf(workflowStatus) !== -1;
 
     if (isCompleted) {
-      console.log('✅ Workflow completed successfully:', status.steps);
+      console.log('✅ Workflow completed successfully:', status);
       return status;
+    }
+
+    if (!isRunning) {
+      console.error('❌ Workflow failed:', status);
+      throw new Error('Workflow execution failed');
     }
 
     // Wait before polling again

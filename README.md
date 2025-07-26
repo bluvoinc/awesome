@@ -24,19 +24,19 @@ The following is provided without any promises or guarantees.
 
 ### Core API Examples (Server-side with API Keys)
 
-| Name                | Description                                   | REST                                                                | SDK                                                               |
-|---------------------|-----------------------------------------------|---------------------------------------------------------------------|-------------------------------------------------------------------|
-| `connect-wallet`    | Connect CEX wallet with API credentials       | [add-binance.ts](connect-wallet/rest/add-binance.ts)                | [add-binance.ts](connect-wallet/ts/add-binance.ts)                |
-| `withdraw`          | Withdraw assets from CEX to on-chain address  | [withdraw.ts](withdraw/rest/withdraw.ts)                            | [withdraw.ts](withdraw/ts/withdraw.ts)                            |
-| `get-wallet`        | Get a crypto wallet                           | [get-wallet.ts](get-wallet/rest/get-wallet.ts)                      | [get-wallet.ts](get-wallet/ts/get-wallet.ts)                      |
-| `list-wallets`      | List all your customer's crypto wallets       | [list-wallets.ts](list-wallet/rest/list-wallets.ts)                 | [list-wallets.ts](list-wallet/ts/list-wallets.ts)                 | 
-| `delete-wallet`     | Delete a crypto wallet                        | [delete-wallet.ts](delete-wallet/rest/delete-wallet.ts)             | [delete-wallet.ts](delete-wallet/ts/delete-wallet.ts)             |
-| `list-transactions` | List all transactions of a crypto wallet      | [list-transactions.ts](list-transactions/rest/list-transactions.ts) | [list-transactions.ts](list-transactions/ts/list-transactions.ts) |
-| `get-transaction`   | Get a specific transaction of a crypto wallet | coming soon                                                         | coming soon                                                       |
-| `list-orders`       | List all orders of a crypto wallet            | coming soon                                                         | coming soon                                                       |
-| `get-order`         | Get a specific order of a crypto wallet       | coming soon                                                         | coming soon                                                       |
-| `list-trades`       | List all trades of a crypto wallet            | coming soon                                                         | coming soon                                                       |
-| `get-trade`         | Get a specific trade of a crypto wallet       | coming soon                                                         | coming soon                                                       |
+| Name                | Description                                   | REST                                                                                       | SDK                                                               |
+|---------------------|-----------------------------------------------|--------------------------------------------------------------------------------------------|-------------------------------------------------------------------|
+| `connect-wallet`    | Connect CEX wallet with API credentials       | [add-binance.ts](https://docs.bluvo.co/api-reference/wallets/connect-wallet)               | [add-binance.ts](connect-wallet/ts/add-binance.ts)                |
+| `withdraw`          | Withdraw assets from CEX to on-chain address  | [withdraw.ts](https://docs.bluvo.co/api-reference/transactions/withdraw-funds)             | [withdraw.ts](withdraw/ts/withdraw.ts)                            |
+| `get-wallet`        | Get a crypto wallet                           | [get-wallet.ts](https://docs.bluvo.co/api-reference/wallets/get-wallet)                    | [get-wallet.ts](get-wallet/ts/get-wallet.ts)                      |
+| `list-wallets`      | List all your customer's crypto wallets       | [list-wallets.ts](https://docs.bluvo.co/api-reference/wallets/list-wallets)                | [list-wallets.ts](list-wallet/ts/list-wallets.ts)                 | 
+| `delete-wallet`     | Delete a crypto wallet                        | [delete-wallet.ts](https://docs.bluvo.co/api-reference/wallets/delete-wallet)              | [delete-wallet.ts](delete-wallet/ts/delete-wallet.ts)             |
+| `list-transactions` | List all transactions of a crypto wallet      | [list-transactions.ts](https://docs.bluvo.co/api-reference/transactions/list-transactions) | [list-transactions.ts](list-transactions/ts/list-transactions.ts) |
+| `get-transaction`   | Get a specific transaction of a crypto wallet | coming soon                                                                                | coming soon                                                       |
+| `list-orders`       | List all orders of a crypto wallet            | coming soon                                                                                | coming soon                                                       |
+| `get-order`         | Get a specific order of a crypto wallet       | coming soon                                                                                | coming soon                                                       |
+| `list-trades`       | List all trades of a crypto wallet            | coming soon                                                                                | coming soon                                                       |
+| `get-trade`         | Get a specific trade of a crypto wallet       | coming soon                                                                                | coming soon                                                       |
 
 ### Widget Examples (Client-side with OAuth2)
 

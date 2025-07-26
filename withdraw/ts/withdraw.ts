@@ -47,7 +47,7 @@ const RECEPIENT_ADDRESS = '0x9C9980F05276b75b08956919dL1899140E10c340'; // Repla
     console.log('🚀 Withdrawal request initiated:', workflowRunId);
 
     // Poll for workflow completion (server-side implementation)
-    await pollWorkflowStatus(client, workflowRunId);
+    await pollWorkflowStatus(client, workflowRunId, "withdraw");
 
     console.log('✅ Withdrawal request processed successfully!');
 

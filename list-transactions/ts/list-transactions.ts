@@ -8,5 +8,5 @@ createClient({
 })
     .wallet
     .transaction
-    .list('99a01408-4ef4-47da-935a-848618c11aro')
+    .list('wallet-id')
     .then(console.log)

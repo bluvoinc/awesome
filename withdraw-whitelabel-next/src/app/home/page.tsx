@@ -32,8 +32,9 @@ const handleStartNewWithdrawal = () => {
 
 export default function Home() {
     // Example of a previously connected wallet ID that could be retrieved from storage
-    const PREVIOUSLY_CONNECTED_WALLET_ID = "d8d71673-2513-41cc-bccf-df50fbca7cfc";
-    const PREVIOUSLY_CONNECTED_EXCHANGE = "coinbase";
+    const PREVIOUSLY_CONNECTED_WALLET_ID = localStorage.getItem('connectedWalletId') || 'unknown-wallet-id';
+    const PREVIOUSLY_CONNECTED_EXCHANGE = localStorage.getItem('connectedExchange') || 'coinbase';
+
 
     // Initialize the flow with server action callbacks
     const flow = useBluvoFlow({
@@ -47,6 +48,10 @@ export default function Home() {
         onWalletConnectedFn: (walletId, exchange) => {
             // call server action store this walletId for the currently-logged in user
             console.log("Should store walletId for the user:", walletId, exchange);
+
+            // store the walletId in localStorage for demo purposes
+            localStorage.setItem('connectedWalletId', walletId);
+            localStorage.setItem('connectedExchange', exchange);
         }
     });
 

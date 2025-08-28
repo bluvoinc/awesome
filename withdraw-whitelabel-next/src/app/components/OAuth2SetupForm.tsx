@@ -80,7 +80,7 @@ export function OAuth2SetupForm({
         disabled={isLoading}
         style={{
           padding: "0.75rem 1.5rem",
-          backgroundColor: isLoading ? "#ccc" : "#007bff",
+          backgroundColor: isLoading ? "#000000" : "#007bff",
           color: "white",
           border: "none",
           borderRadius: "0.25rem",

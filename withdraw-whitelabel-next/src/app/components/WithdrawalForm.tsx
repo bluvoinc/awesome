@@ -22,26 +22,19 @@ export function WithdrawalForm({
 }: WithdrawalFormProps) {
   const [requiresConfirmation, setRequiresConfirmation] = useState(false);
 
-  // Set default network if not selected
+  // Set default network only once when component mounts and there's no selection
   React.useEffect(() => {
     if (networks.length > 0 && !form?.selectedNetwork) {
-      onUpdateForm('selectedNetwork', networks[0].id);
+      // Use timeout to avoid synchronous state updates
+      const timer = setTimeout(() => {
+        onUpdateForm('selectedNetwork', networks[0].id);
+      }, 0);
+      return () => clearTimeout(timer);
     }
-  }, [networks, form?.selectedNetwork, onUpdateForm]);
+  }, []); // Empty dependency array - only run on mount
 
   // Get selected network
   const selectedNetwork = networks.find(n => n.id === form?.selectedNetwork) || networks[0];
-  
-  // Calculate and pre-fill amount when network changes or amount is empty
-  React.useEffect(() => {
-    if (selectedNetwork) {
-      const minWithdrawal = parseFloat(selectedNetwork.minWithdrawal);
-      const prefillAmount = Math.min(ownedAmount, minWithdrawal);
-      if (prefillAmount > 0) {
-        onUpdateForm('amount', prefillAmount.toFixed(8));
-      }
-    }
-  }, [selectedNetwork?.id, ownedAmount, onUpdateForm]);
   
   // Validate address against regex
   const isAddressValid = React.useMemo(() => {
@@ -100,7 +93,7 @@ export function WithdrawalForm({
           style={{
             width: "100%",
             padding: "0.5rem",
-            border: "1px solid #ced4da",
+            border: "1px solid #000000",
             borderRadius: "0.25rem",
             fontSize: "0.875rem"
           }}
@@ -123,7 +116,7 @@ export function WithdrawalForm({
           style={{
             width: "100%",
             padding: "0.5rem",
-            border: `1px solid ${!isAddressValid && selectedNetwork?.addressRegex && form?.destinationAddress ? "#dc3545" : "#ced4da"}`,
+            border: `1px solid ${!isAddressValid && selectedNetwork?.addressRegex && form?.destinationAddress ? "#dc3545" : "#000000"}`,
             borderRadius: "0.25rem",
             fontSize: "0.875rem"
           }}
@@ -154,7 +147,7 @@ export function WithdrawalForm({
             style={{
               width: "100%",
               padding: "0.5rem",
-              border: "1px solid #ced4da",
+              border: "1px solid #000000",
               borderRadius: "0.25rem",
               fontSize: "0.875rem"
             }}

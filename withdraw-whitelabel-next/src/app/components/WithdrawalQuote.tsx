@@ -82,7 +82,7 @@ export function WithdrawalQuote({
             style={{
               width: "100%",
               padding: "0.5rem",
-              border: "1px solid #ced4da",
+              border: "1px solid #000000",
               borderRadius: "0.25rem",
               fontSize: "0.875rem",
               marginBottom: "0.75rem"

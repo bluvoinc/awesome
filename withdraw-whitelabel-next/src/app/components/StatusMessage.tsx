@@ -15,9 +15,9 @@ export function StatusMessage({ message, type }: StatusMessageProps) {
         borderRadius: "0.25rem",
         backgroundColor:
           type === "error"
-            ? "#f8d7da"
+            ? "#000000"
             : type === "success"
-            ? "#d4edda"
+            ? "#000000"
             : "#000",
         color:
           type === "error"

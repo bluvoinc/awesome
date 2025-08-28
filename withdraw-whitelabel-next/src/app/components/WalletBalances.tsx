@@ -42,7 +42,7 @@ export function WalletBalances({
       style={{
         padding: "1rem",
         borderRadius: "0.25rem",
-        border: "1px solid #dee2e6",
+        border: "1px solid #000000",
         marginTop: "1rem",
       }}
     >

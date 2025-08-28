@@ -44,8 +44,8 @@ export function CryptoBalance({
         style={{
           width: "100%",
           padding: "0.75rem 1rem",
-          backgroundColor: isInsufficientBalance ? "#f8f9fa" : "#000",
-          border: `1px solid ${isInsufficientBalance ? "#e9ecef" : "#dee2e6"}`,
+          backgroundColor: isInsufficientBalance ? "#000000" : "#000",
+          border: `1px solid ${isInsufficientBalance ? "#000000" : "#000000"}`,
           borderRadius: "0.25rem",
           cursor: isInsufficientBalance ? "not-allowed" : "pointer",
           fontSize: "1rem",
@@ -61,7 +61,7 @@ export function CryptoBalance({
           }
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = isInsufficientBalance ? "#f8f9fa" : "#000";
+          e.currentTarget.style.backgroundColor = isInsufficientBalance ? "#000" : "#000";
         }}
       >
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
@@ -93,7 +93,7 @@ export function CryptoBalance({
           style={{
             padding: "1rem",
             backgroundColor: "#000",
-            border: "1px solid #dee2e6",
+            border: "1px solid #000000",
             borderTop: "none",
             borderRadius: "0 0 0.25rem 0.25rem",
             marginTop: "-1px",
@@ -105,7 +105,7 @@ export function CryptoBalance({
             {isInsufficientBalance ? (
               <div style={{
                 padding: "1rem",
-                backgroundColor: "#f8d7da",
+                backgroundColor: "#000000",
                 border: "1px solid #f5c6cb",
                 borderRadius: "0.25rem",
                 color: "#721c24",

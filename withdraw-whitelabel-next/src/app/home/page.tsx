@@ -1,374 +1,245 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { createWebClient } from "@bluvo/sdk-ts";
-import { useMutation } from "@tanstack/react-query";
-import { getWalletById } from "../actions/wallet";
-import { getWithdrawalQuote, transactFunds } from "../actions/withdrawal";
-import { Balance } from "../types/wallet";
+import React from 'react';
+import {
+    fetchWithdrawableBalances,
+    requestQuotation,
+    executeWithdrawal
+} from '../actions/flowActions';
 
-// UI Components
-import { OAuth2SetupForm } from "../components/OAuth2SetupForm";
-import { StatusMessage } from "../components/StatusMessage";
-import { WalletBalances } from "../components/WalletBalances";
-import styles from "../page.module.css";
+// State-specific components
+import {StartFlowComponent} from '../components/states/StartFlowComponent';
+import {OAuthPendingComponent} from '../components/states/OAuthPendingComponent';
+import {WalletLoadingComponent} from '../components/states/WalletLoadingComponent';
+import {WalletReadyComponent} from '../components/states/WalletReadyComponent';
+import {QuoteLoadingComponent} from '../components/states/QuoteLoadingComponent';
+import {QuoteReadyComponent} from '../components/states/QuoteReadyComponent';
+import {RequireTwoFactorAuthenticationCode} from '../components/states/RequireTwoFactorAuthenticationCode';
+import {RequireSMSCode} from '../components/states/RequireSMSCode';
+import {RequireKYCComponent} from '../components/states/RequireKYCComponent';
+import {WithdrawalCompletedComponent} from '../components/states/WithdrawalCompletedComponent';
+import {ErrorComponent} from '../components/states/ErrorComponent';
 
-// Constants
-const MOMENTO_TOKEN = 'eyJlbmRwb2ludCI6ImNlbGwtNC11cy13ZXN0LTItMS5wcm9kLmEubW9tZW50b2hxLmNvbSIsImFwaV9rZXkiOiJleUpoYkdjaU9pSklVekkxTmlKOS5leUp6ZFdJaU9pSm1iRzlBWW14MWRtOHVZMjhpTENKMlpYSWlPakVzSW5BaU9pSkZhRWxMUlVKSlQwTkJTV0ZEUVc5SFlqSkdNV1JIWjNsSlowRTlJbjAuU0Y2M3NHWkoxYUdKckJpRVZCdXZlbG9pOEFWWkNFVzd1ZnNOUklGYUx5dyJ9'
+import styles from '../page.module.css';
+import { useBluvoFlow } from "@bluvo/react";
 
-const PREFILL_DESTINATION_ADDRESSES = {
-  "LTC": "ltc1q4cj9y83hg5f5zvwu8f2he4g9j6u8l7skw3q5tu",
-  "BTC": "bc1qm50vw9uh7k4dghewqygyye2cqavjgyrk9y6lj4",
-}
+const generateId = () => crypto.randomUUID();
 
-// Utility function
-function randomUUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-}
+const handleStartNewWithdrawal = () => {
+    // Reset by reloading the page (in production, you might want a cleaner reset)
+    window.location.reload();
+};
 
-/**
- * Bluvo SDK Integration Example
- * 
- * This page demonstrates the complete flow of:
- * 1. OAuth2 authentication with Coinbase
- * 2. Wallet balance retrieval
- * 3. Withdrawal quote generation
- * 4. Transaction execution with 2FA
- */
 export default function Home() {
-  // OAuth2 Configuration
-  const [orgId, setOrgId] = useState("a2e98409-cd68-48c4-853c-73d9228764c0");
-  const [projectId, setProjectId] = useState("b16e1c13-74ad-4b95-b252-0c12e2215b18");
-  const [walletId, setWalletId] = useState(randomUUID());
-  const [idem, setIdem] = useState(randomUUID());
+    // Example of a previously connected wallet ID that could be retrieved from storage
+    const PREVIOUSLY_CONNECTED_WALLET_ID = "d8d71673-2513-41cc-bccf-df50fbca7cfc";
+    const PREVIOUSLY_CONNECTED_EXCHANGE = "coinbase";
 
-  // App State
-  const [status, setStatus] = useState<{ message: string; type: "info" | "success" | "error" }>({ message: "", type: "info" });
-  const [isLoading, setIsLoading] = useState(false);
-  const [walletBalances, setWalletBalances] = useState<Balance[] | null>(null);
-  const [showLoadingWallet, setShowLoadingWallet] = useState(false);
+    // Initialize the flow with server action callbacks
+    const flow = useBluvoFlow({
+        orgId: "a2e98409-cd68-48c4-853c-73d9228764c0",
+        projectId: "b16e1c13-74ad-4b95-b252-0c12e2215b18", // <- deprecated soon to be removed
 
-  // Withdrawal State
-  const [expandedCrypto, setExpandedCrypto] = useState<string | null>(null);
-  const [withdrawalForms, setWithdrawalForms] = useState<Record<string, { amount: string; destinationAddress: string; twoFactorCode: string; selectedNetwork?: string }>>({});
-  const [activeQuotes, setActiveQuotes] = useState<Record<string, any>>({});
+        fetchWithdrawableBalanceFn: fetchWithdrawableBalances,
+        requestQuotationFn: requestQuotation,
+        executeWithdrawalFn: executeWithdrawal,
 
-  // ==========================================
-  // STEP 1: Wallet Balance Retrieval
-  // ==========================================
-  const walletMutation = useMutation({
-    mutationFn: getWalletById,
-    onSuccess: (result) => {
-      if (result.success && result.data) {
-        setWalletBalances(result.data.balances);
-        setShowLoadingWallet(false);
-      } else {
-        setStatus({ message: `Failed to fetch wallet: ${result.error}`, type: "error" });
-        setShowLoadingWallet(false);
-      }
-    },
-    onError: (error) => {
-      setStatus({ message: `Error fetching wallet: ${error.message}`, type: "error" });
-      setShowLoadingWallet(false);
-    },
-  });
-
-  // Check for existing session on mount
-  useEffect(() => {
-    const storedWalletId = localStorage.getItem('coinbase-wallet-id');
-    if (storedWalletId) {
-      setShowLoadingWallet(true);
-      setStatus({ message: "Found existing session. Loading wallet data...", type: "info" });
-      walletMutation.mutate(storedWalletId);
-    }
-  }, []);
-
-  // ==========================================
-  // STEP 2: OAuth2 Flow with Coinbase
-  // ==========================================
-  const handleOAuth2Click = async () => {
-    if (!orgId || !projectId || !walletId || !idem) {
-      setStatus({ message: "Please fill in all fields", type: "error" });
-      return;
-    }
-
-    setIsLoading(true);
-    setStatus({ message: "Initializing OAuth2 flow...", type: "info" });
-
-    try {
-      // Initialize Bluvo WebClient
-      const webClient = createWebClient({
-        orgId,
-        projectId
-      });
-
-      // Open OAuth2 window
-      await webClient.oauth2.openWindow(
-        "coinbase",
-        {
-          walletId: walletId,
-          idem: idem,
-        },
-        {
-          onWindowClose: () => {
-            console.log("OAuth2 window was closed");
-            setStatus({ message: "OAuth2 window was closed by user", type: "info" });
-            setIsLoading(false);
-          },
+        onWalletConnectedFn: (walletId, exchange) => {
+            // call server action store this walletId for the currently-logged in user
+            console.log("Should store walletId for the user:", walletId, exchange);
         }
-      );
-
-      // Listen for OAuth2 completion
-      await webClient.listen(
-        idem,
-        MOMENTO_TOKEN,
-        {
-          onMessage: (data: {
-            [key: string]: any;
-            success?: boolean | undefined;
-            walletId?: string | undefined;
-          }) => {
-            console.log("Received OAuth2 token data:", data);
-            
-            // Persist wallet ID
-            const receivedWalletId = data.walletId || walletId;
-            localStorage.setItem('coinbase-wallet-id', receivedWalletId);
-            
-            // Fetch wallet data
-            setShowLoadingWallet(true);
-            setStatus({ message: "OAuth2 successful! Fetching wallet data...", type: "info" });
-            setIsLoading(false);
-            walletMutation.mutate(receivedWalletId);
-          },
-          onError: (error:any) => {
-            console.error("Error receiving OAuth2 token data:", error);
-            setStatus({ message: `Error receiving token data: ${error.message}`, type: "error" });
-            setIsLoading(false);
-          },
-          onComplete: () => {
-            console.log("OAuth2 flow complete");
-            setStatus({ message: "OAuth2 flow complete", type: "success" });
-            setIsLoading(false);
-          },
-        }
-      );
-
-      setStatus({ message: "OAuth2 window opened successfully! Check for popups if you don't see it.", type: "success" });
-    } catch (error: any) {
-      console.error("OAuth2 error:", error);
-      setStatus({ message: `Error: ${error.message}`, type: "error" });
-      setIsLoading(false);
-    }
-  };
-
-  // ==========================================
-  // STEP 3: Withdrawal Quote Generation
-  // ==========================================
-  const quoteMutation = useMutation({
-    mutationFn: getWithdrawalQuote,
-    onSuccess: (result, variables) => {
-      if (result.success && result.data) {
-        setActiveQuotes(prev => ({
-          ...prev,
-          [variables.asset]: result.data
-        }));
-        setStatus({ 
-          message: `Quote received! This quote expires in 30 seconds.`, 
-          type: "success" 
-        });
-      } else {
-        setStatus({ message: `Failed to get quote: ${result.error}`, type: "error" });
-      }
-    },
-    onError: (error) => {
-      setStatus({ message: `Error getting quote: ${error.message}`, type: "error" });
-    },
-  });
-
-  const handleGetQuote = (crypto: string) => {
-    const form = withdrawalForms[crypto];
-    if (!form || !form.amount || !form.destinationAddress) {
-      setStatus({ message: "Please fill in amount and destination address", type: "error" });
-      return;
-    }
-
-    const storedWalletId = localStorage.getItem('coinbase-wallet-id');
-    if (!storedWalletId) {
-      setStatus({ message: "No wallet ID found. Please sign in first.", type: "error" });
-      return;
-    }
-
-    quoteMutation.mutate({
-      walletId: storedWalletId,
-      asset: crypto,
-      amount: parseFloat(form.amount),
-      destinationAddress: form.destinationAddress,
-      network: form.selectedNetwork || undefined,
     });
-  };
 
-  // ==========================================
-  // STEP 4: Transaction Execution with 2FA
-  // ==========================================
-  const transactMutation = useMutation({
-    mutationFn: transactFunds,
-    onSuccess: (result) => {
-      if (result.success && result.data) {
-        setStatus({ 
-          message: `Transaction initiated! Workflow ID: ${result.data.workflowRunId}`, 
-          type: "success" 
+    const handleStartFlow = async () => {
+        await flow.startWithdrawalFlow({
+            exchange: 'coinbase',
+            walletId: generateId()
         });
-        
-        // Clear form after successful transaction
-        const crypto = Object.keys(activeQuotes).find(key => 
-          activeQuotes[key].quoteId === result.data.quoteId
-        );
-        if (crypto) {
-          setWithdrawalForms(prev => ({
-            ...prev,
-            [crypto]: { amount: '', destinationAddress: '', twoFactorCode: '' }
-          }));
-          setActiveQuotes(prev => {
-            const newQuotes = { ...prev };
-            delete newQuotes[crypto];
-            return newQuotes;
-          });
-        }
-      } else {
-        setStatus({ message: `Failed to transact: ${result.error}`, type: "error" });
-      }
-    },
-    onError: (error) => {
-      setStatus({ message: `Error transacting: ${error.message}`, type: "error" });
-    },
-  });
+    };
 
-  const handleTransactFunds = (crypto: string) => {
-    const quote = activeQuotes[crypto];
-    const form = withdrawalForms[crypto];
-    
-    if (!quote || !form?.twoFactorCode) {
-      setStatus({ message: "Please enter 2FA code", type: "error" });
-      return;
-    }
+    const handleResumeFlow = async () => {
+        await flow.resumeWithdrawalFlow({
+            exchange: PREVIOUSLY_CONNECTED_EXCHANGE,
+            walletId: PREVIOUSLY_CONNECTED_WALLET_ID
+        });
+    };
 
-    transactMutation.mutate({
-      quoteId: quote.quoteId,
-      twoFactorCode: form.twoFactorCode
-    });
-  };
+    return (
+        <div className={styles.page}>
+            <main className={styles.main}>
+                <h1>Bluvo Withdrawal Flow</h1>
 
-  // ==========================================
-  // Helper Functions
-  // ==========================================
-  const handleClearSession = () => {
-    localStorage.removeItem('coinbase-wallet-id');
-    setWalletBalances(null);
-    setExpandedCrypto(null);
-    setWithdrawalForms({});
-    setActiveQuotes({});
-    setStatus({ message: "Session cleared. You can sign in again.", type: "info" });
-  };
+                {!flow.state && (
+                    <div style={{ textAlign: 'center', padding: '2rem' }}>
+                        <h2>Choose an Option</h2>
+                        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '2rem' }}>
+                            <button
+                                onClick={handleStartFlow}
+                                style={{
+                                    padding: '1rem 2rem',
+                                    backgroundColor: '#007bff',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '0.5rem',
+                                    fontSize: '1rem',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Start New Withdrawal
+                            </button>
+                            <button
+                                onClick={handleResumeFlow}
+                                style={{
+                                    padding: '1rem 2rem',
+                                    backgroundColor: '#28a745',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '0.5rem',
+                                    fontSize: '1rem',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Resume with Existing Wallet
+                            </button>
+                        </div>
+                        <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#6c757d' }}>
+                            Resume uses wallet ID: {PREVIOUSLY_CONNECTED_WALLET_ID.slice(0, 8)}...
+                        </p>
+                    </div>
+                )}
+                
+                {flow.isOAuthPending && <OAuthPendingComponent onCancel={flow.cancel} />}
+                
+                {flow.isWalletLoading && <WalletLoadingComponent />}
+                
+                {flow.isWalletReady && <WalletReadyComponent
+                    balances={flow.walletBalances}
+                    onRequestQuote={flow.requestQuote}
+                />}
+                
+                {flow.isQuoteLoading && <QuoteLoadingComponent />}
+                
+                {flow.isQuoteReady && flow.quote && (
+                    <QuoteReadyComponent
+                        quote={flow.quote}
+                        onExecuteWithdrawal={() => flow.executeWithdrawal(flow.quote!.id)}
+                        isExecuting={flow.isWithdrawing}
+                    />
+                )}
+                
+                {flow.isQuoteExpired && (
+                    <ErrorComponent
+                        error={new Error('Quote has expired. Please start a new withdrawal.')}
+                        onCancel={handleStartNewWithdrawal}
+                    />
+                )}
+                
+                {flow.requires2FA && (
+                    <RequireTwoFactorAuthenticationCode
+                        onSubmit2FA={flow.submit2FA}
+                        isSubmitting={false}
+                    />
+                )}
+                
+                {flow.requiresSMS && (
+                    <RequireSMSCode
+                        onSubmitSMS={flow.submitSMS}
+                        isSubmitting={false}
+                    />
+                )}
+                
+                {flow.requiresKYC && <RequireKYCComponent onCancel={flow.cancel} />}
+                
+                {flow.isWithdrawalComplete && flow.withdrawal && (
+                    <WithdrawalCompletedComponent
+                        withdrawal={flow.withdrawal}
+                        onStartNew={handleStartNewWithdrawal}
+                    />
+                )}
 
-  const toggleCrypto = (crypto: string) => {
-    setExpandedCrypto(expandedCrypto === crypto ? null : crypto);
-    // Initialize form data if not exists
-    if (!withdrawalForms[crypto]) {
-      setWithdrawalForms(prev => ({
-        ...prev,
-        [crypto]: {
-          amount: '',
-          destinationAddress: PREFILL_DESTINATION_ADDRESSES[crypto as keyof typeof PREFILL_DESTINATION_ADDRESSES] || '',
-          twoFactorCode: '',
-          selectedNetwork: undefined
-        }
-      }));
-    }
-  };
+                {flow.canRetry && (
+                    <ErrorComponent
+                        error={new Error('Withdrawal failed but can be retried')}
+                        onRetry={flow.retryWithdrawal}
+                        onCancel={flow.cancel}
+                        canRetry={true}
+                    />
+                )}
+                
+                {flow.hasFatalError && (
+                    <ErrorComponent
+                        error={flow.error || new Error('A fatal error occurred during withdrawal')}
+                        onCancel={handleStartNewWithdrawal}
+                    />
+                )}
 
-  const updateWithdrawalForm = (crypto: string, field: 'amount' | 'destinationAddress' | 'twoFactorCode' | 'selectedNetwork', value: string) => {
-    setWithdrawalForms(prev => ({
-      ...prev,
-      [crypto]: {
-        ...prev[crypto],
-        [field]: value
-      }
-    }));
-  };
+                {/*{flow.hasError && (*/}
+                {/*    <ErrorComponent*/}
+                {/*        error={flow.error!}*/}
+                {/*        onCancel={handleStartNewWithdrawal}*/}
+                {/*    />*/}
+                {/*)}*/}
+                
+                {flow.isWithdrawing && (
+                    <div style={{textAlign: 'center', padding: '2rem'}}>
+                        <h2>🔄 Processing Withdrawal</h2>
+                        <p>Current state: {flow.state?.type}</p>
+                        <div style={{margin: '1rem 0'}}>
+                            <div className="spinner" style={{
+                                display: 'inline-block',
+                                width: '20px',
+                                height: '20px',
+                                border: '3px solid #f3f3f3',
+                                borderTop: '3px solid #007bff',
+                                borderRadius: '50%',
+                                animation: 'spin 2s linear infinite'
+                            }}></div>
+                        </div>
+                    </div>
+                )}
+                
+                {flow.state && !flow.isOAuthPending && !flow.isWalletLoading && !flow.isWalletReady && 
+                 !flow.isQuoteLoading && !flow.isQuoteReady && !flow.isQuoteExpired && 
+                 !flow.requires2FA && !flow.requiresSMS && !flow.requiresKYC && 
+                 !flow.isWithdrawalComplete && !flow.canRetry && !flow.hasFatalError && 
+                 !flow.hasError && !flow.isWithdrawing && (
+                    <div style={{textAlign: 'center', padding: '2rem'}}>
+                        <h2>Unknown State</h2>
+                        <p>Current state: {flow.state?.type}</p>
+                        <button onClick={handleStartNewWithdrawal}>
+                            Restart
+                        </button>
+                    </div>
+                )}
 
-  // ==========================================
-  // Render UI
-  // ==========================================
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <h1>BluvoWebClient OAuth2 Test</h1>
+                {/* Debug Info */}
+                <details style={{marginTop: '2rem', fontSize: '0.8rem'}}>
+                    <summary>Debug Info</summary>
+                    <pre style={{
+                        backgroundColor: '#000000',
+                        padding: '1rem',
+                        borderRadius: '0.25rem',
+                        overflow: 'auto'
+                    }}>
+            {JSON.stringify({
+                state: flow.state?.type,
+                context: flow.context,
+                error: flow.error?.message
+            }, null, 2)}
+          </pre>
+                </details>
+            </main>
 
-        <OAuth2SetupForm
-          orgId={orgId}
-          setOrgId={setOrgId}
-          projectId={projectId}
-          setProjectId={setProjectId}
-          walletId={walletId}
-          setWalletId={setWalletId}
-          idem={idem}
-          setIdem={setIdem}
-          onSubmit={handleOAuth2Click}
-          isLoading={isLoading}
-        />
-
-        {!!walletBalances && (
-          <button
-            onClick={handleClearSession}
-            style={{
-              marginTop: "1rem",
-              padding: "0.75rem 1.5rem",
-              backgroundColor: "#dc3545",
-              color: "white",
-              border: "none",
-              borderRadius: "0.25rem",
-              cursor: "pointer",
-              fontSize: "1rem",
-            }}
-          >
-            Clear Session
-          </button>
-        )}
-
-        <StatusMessage message={status.message} type={status.type} />
-
-        {showLoadingWallet && (
-          <div
-            style={{
-              padding: "1rem",
-              borderRadius: "0.25rem",
-              backgroundColor: "#cff4fc",
-              color: "#0c5460",
-              textAlign: "center",
-            }}
-          >
-            Loading wallet data...
-          </div>
-        )}
-
-        {!!walletBalances && (
-          <WalletBalances
-            balances={walletBalances}
-            expandedCrypto={expandedCrypto}
-            onToggleCrypto={toggleCrypto}
-            withdrawalForms={withdrawalForms}
-            onUpdateWithdrawalForm={updateWithdrawalForm}
-            onGetQuote={handleGetQuote}
-            activeQuotes={activeQuotes}
-            onTransactFunds={handleTransactFunds}
-            isGettingQuote={quoteMutation.isPending}
-            isTransacting={transactMutation.isPending}
-          />
-        )}
-      </main>
-    </div>
-  );
+            <style>{`
+                @keyframes spin {
+                    0% {
+                        transform: rotate(0deg);
+                    }
+                    100% {
+                        transform: rotate(360deg);
+                    }
+                }
+            `}</style>
+        </div>
+    );
 }

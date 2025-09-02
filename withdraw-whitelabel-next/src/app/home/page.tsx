@@ -8,7 +8,6 @@ import {
 } from '../actions/flowActions';
 
 // State-specific components
-import {StartFlowComponent} from '../components/states/StartFlowComponent';
 import {OAuthPendingComponent} from '../components/states/OAuthPendingComponent';
 import {WalletLoadingComponent} from '../components/states/WalletLoadingComponent';
 import {WalletReadyComponent} from '../components/states/WalletReadyComponent';
@@ -31,10 +30,10 @@ const handleStartNewWithdrawal = () => {
 };
 
 export default function Home() {
-    // Example of a previously connected wallet ID that could be retrieved from storage
+
+    // FIXME: ⨯ ReferenceError: localStorage is not defined
     const PREVIOUSLY_CONNECTED_WALLET_ID = localStorage.getItem('connectedWalletId') || 'unknown-wallet-id';
     const PREVIOUSLY_CONNECTED_EXCHANGE = localStorage.getItem('connectedExchange') || 'coinbase';
-
 
     // Initialize the flow with server action callbacks
     const flow = useBluvoFlow({
@@ -143,6 +142,8 @@ export default function Home() {
                     <RequireTwoFactorAuthenticationCode
                         onSubmit2FA={flow.submit2FA}
                         isSubmitting={false}
+                        invalid2FAAttempts={flow.invalid2FAAttempts}
+                        expiresAt={flow.quote?.expiresAt}
                     />
                 )}
                 
@@ -217,6 +218,46 @@ export default function Home() {
                     </div>
                 )}
 
+                {/* 
+                ==============================================
+                TEST SECTION - COMMENT/UNCOMMENT AS NEEDED 
+                ==============================================
+                */}
+                {/*{flow.isWithdrawing && (*/}
+                {/*    <div style={{*/}
+                {/*        marginTop: '2rem',*/}
+                {/*        padding: '1rem',*/}
+                {/*        backgroundColor: '#2a2a2a',*/}
+                {/*        borderRadius: '0.5rem',*/}
+                {/*        border: '2px dashed #ffc107',*/}
+                {/*        textAlign: 'center'*/}
+                {/*    }}>*/}
+                {/*        <h3 style={{ color: '#ffc107', margin: '0 0 1rem 0' }}>🧪 TEST ZONE</h3>*/}
+                {/*        <p style={{ color: '#ccc', fontSize: '0.9rem', margin: '0 0 1rem 0' }}>*/}
+                {/*            Click below to simulate withdrawal completion without real transaction*/}
+                {/*        </p>*/}
+                {/*        <button*/}
+                {/*            onClick={() => flow.testWithdrawalComplete()}*/}
+                {/*            style={{*/}
+                {/*                padding: '0.75rem 1.5rem',*/}
+                {/*                fontSize: '1rem',*/}
+                {/*                backgroundColor: '#dc3545',*/}
+                {/*                color: 'white',*/}
+                {/*                border: 'none',*/}
+                {/*                borderRadius: '0.25rem',*/}
+                {/*                cursor: 'pointer',*/}
+                {/*                fontWeight: 'bold'*/}
+                {/*            }}*/}
+                {/*        >*/}
+                {/*            🧪 TEST: Simulate Withdrawal Complete*/}
+                {/*        </button>*/}
+                {/*        <p style={{ color: '#888', fontSize: '0.8rem', margin: '0.5rem 0 0 0' }}>*/}
+                {/*            Check console for detailed logs*/}
+                {/*        </p>*/}
+                {/*    </div>*/}
+                {/*)}*/}
+
+                
                 {/* Debug Info */}
                 <details style={{marginTop: '2rem', fontSize: '0.8rem'}}>
                     <summary>Debug Info</summary>
@@ -229,7 +270,8 @@ export default function Home() {
             {JSON.stringify({
                 state: flow.state?.type,
                 context: flow.context,
-                error: flow.error?.message
+                error: flow.error?.message,
+                invalid2FAAttempts: flow.invalid2FAAttempts
             }, null, 2)}
           </pre>
                 </details>

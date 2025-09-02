@@ -1,15 +1,27 @@
 import React, { useState } from 'react';
+import { ExpiresInComponent } from '../common/ExpiresInComponent';
 
 interface RequireTwoFactorAuthenticationCodeProps {
   onSubmit2FA: (code: string) => void;
   isSubmitting?: boolean;
+  invalid2FAAttempts?: number;
+  expiresAt?: number;
 }
 
-export function RequireTwoFactorAuthenticationCode({ 
+export function RequireTwoFactorAuthenticationCode({
   onSubmit2FA, 
-  isSubmitting 
+  isSubmitting,
+  invalid2FAAttempts = 0,
+  expiresAt
 }: RequireTwoFactorAuthenticationCodeProps) {
   const [twoFACode, setTwoFACode] = useState('');
+  
+  // Clear the input when invalid attempts change (new invalid attempt)
+  React.useEffect(() => {
+    if (invalid2FAAttempts > 0) {
+      setTwoFACode('');
+    }
+  }, [invalid2FAAttempts]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,15 +30,50 @@ export function RequireTwoFactorAuthenticationCode({
     }
   };
 
+  const hasInvalidAttempts = invalid2FAAttempts > 0;
+
   return (
     <div style={{ 
       padding: '1.5rem',
-      backgroundColor: '#fff3cd',
+      backgroundColor: '#000000',
       borderRadius: '0.5rem',
-      border: '1px solid #ffc107'
+      border: hasInvalidAttempts ? '1px solid #dc3545' : '1px solid #ffc107',
+      color: 'white'
     }}>
-      <h2>🔐 Two-Factor Authentication Required</h2>
-      <p>Please enter your 2FA authentication code to continue:</p>
+      <h2 style={{ color: 'white' }}>🔐 Two-Factor Authentication Required</h2>
+      {hasInvalidAttempts && (
+        <div style={{
+          padding: '0.75rem',
+          marginBottom: '1rem',
+          backgroundColor: '#2d1b1b',
+          border: '1px solid #dc3545',
+          borderRadius: '0.25rem',
+          color: '#f8d7da'
+        }}>
+          <strong style={{ color: '#dc3545' }}>❌ Invalid 2FA Code</strong>
+          <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem', color: '#f8d7da' }}>
+            The 2FA code you entered is incorrect. Please try again. 
+            {invalid2FAAttempts > 1 && ` (${invalid2FAAttempts} failed attempts)`}
+          </p>
+        </div>
+      )}
+      <p style={{ color: 'white' }}>Please enter your 2FA authentication code to continue:</p>
+      {expiresAt && (
+        <div style={{ 
+          marginBottom: '1rem', 
+          padding: '0.5rem',
+          backgroundColor: '#1a1a1a',
+          borderRadius: '0.25rem',
+          border: '1px solid #444'
+        }}>
+          <ExpiresInComponent 
+            expiresAt={expiresAt}
+            label="Quote expires in:"
+            size="small"
+            showIcon={true}
+          />
+        </div>
+      )}
       <form onSubmit={handleSubmit} style={{ marginTop: '1rem' }}>
         <input
           type="text"
@@ -40,9 +87,11 @@ export function RequireTwoFactorAuthenticationCode({
             fontSize: '1.2rem',
             textAlign: 'center',
             letterSpacing: '0.2em',
-            border: '1px solid #000000',
+            border: hasInvalidAttempts ? '2px solid #dc3545' : '1px solid #ffc107',
             borderRadius: '0.25rem',
-            marginBottom: '1rem'
+            marginBottom: '1rem',
+            backgroundColor: hasInvalidAttempts ? '#2d1b1b' : '#1a1a1a',
+            color: hasInvalidAttempts ? '#f8d7da' : 'white'
           }}
           autoFocus
         />
@@ -53,7 +102,7 @@ export function RequireTwoFactorAuthenticationCode({
             width: '100%',
             padding: '0.75rem',
             fontSize: '1rem',
-            backgroundColor: twoFACode.length < 6 ? '#000' : '#ffc107',
+            backgroundColor: twoFACode.length < 6 ? '#333333' : '#ffc107',
             color: 'white',
             border: 'none',
             borderRadius: '0.25rem',

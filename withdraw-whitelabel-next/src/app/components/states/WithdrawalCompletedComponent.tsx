@@ -26,7 +26,6 @@ export function WithdrawalCompletedComponent({
       <h2>🎉 Withdrawal Completed Successfully!</h2>
       <div style={{ 
         padding: '1rem',
-        backgroundColor: 'white',
         borderRadius: '0.25rem',
         margin: '1rem 0',
         border: '1px solid #000000'

@@ -6,6 +6,20 @@ export async function fetchWithdrawableBalances(walletId: string) {
     return await getWithdrawableBalanceById(walletId);
 }
 
+function loadBluvoClient() {
+
+    if (!process.env.BLUVO_ORG_ID || !process.env.BLUVO_PROJECT_ID || !process.env.BLUVO_API_KEY) {
+        throw new Error('Missing Bluvo environment variables: BLUVO_ORG_ID, BLUVO_PROJECT_ID, BLUVO_API_KEY');
+    }
+
+    // uses localhost dev server URL
+    return createClient({
+        orgId: process.env.BLUVO_ORG_ID,
+        projectId: process.env.BLUVO_PROJECT_ID,
+        apiKey: process.env.BLUVO_API_KEY,
+    });
+}
+
 export async function requestQuotation(walletId: string, params: {
     asset: string;
     amount: string;
@@ -47,13 +61,7 @@ function toPlain<T extends object>(o: T): T {
 
 
 async function getWithdrawableBalanceById(walletId: string) {
-    const client = createClient({
-        orgId: process.env.BLUVO_ORG_ID!,
-        projectId: process.env.BLUVO_PROJECT_ID!,
-        apiKey: process.env.BLUVO_API_KEY!,
-    });
-
-    return toPlain(await client
+    return toPlain(await loadBluvoClient()
         .wallet
         .withdrawals
         .getWithdrawableBalance(walletId));
@@ -68,13 +76,7 @@ export async function requestWithdrawalQuotation(request: {
     tag?: string
     includeFee?: boolean
 }) {
-    const client = createClient({
-        orgId: process.env.BLUVO_ORG_ID || '',
-        projectId: process.env.BLUVO_PROJECT_ID || '',
-        apiKey: process.env.BLUVO_API_KEY || '',
-    });
-
-    return await client
+    return await loadBluvoClient()
         .wallet
         .withdrawals
         .requestQuotation(
@@ -100,13 +102,9 @@ export async function executeWithdrawalFromQuoteId(request: {
     twoFactorCode?: string
 }) {
 
-    const client = createClient({
-        orgId: process.env.BLUVO_ORG_ID || '',
-        projectId: process.env.BLUVO_PROJECT_ID || '',
-        apiKey: process.env.BLUVO_API_KEY || '',
-    });
+    console.log("shooting withdrawal for quoteId", request.quoteId, "on wallet", request.walletId, "with 2fa", request.twoFactorCode);
 
-    return await client
+    return await loadBluvoClient()
         .wallet
         .withdrawals
         .executeWithdrawal(
@@ -114,7 +112,6 @@ export async function executeWithdrawalFromQuoteId(request: {
             request.idem, // <-- pick a random uuid
             request.quoteId,
             {
-                // TODO: improve the needed fields
                 twofa: request.twoFactorCode
             }
         );

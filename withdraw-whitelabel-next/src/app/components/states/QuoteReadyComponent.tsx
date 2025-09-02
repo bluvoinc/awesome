@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { ExpiresInComponent } from '../common/ExpiresInComponent';
 
 interface Quote {
   id: string;
@@ -16,7 +17,23 @@ interface QuoteReadyComponentProps {
 }
 
 export function QuoteReadyComponent({ quote, onExecuteWithdrawal, isExecuting }: QuoteReadyComponentProps) {
-  const expiresIn = Math.max(0, Math.round((quote.expiresAt - Date.now()) / 1000));
+  const [expiresIn, setExpiresIn] = useState(() => 
+    Math.max(0, Math.round((quote.expiresAt - Date.now()) / 1000))
+  );
+
+  // Update expiresIn for button state
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const newTimeRemaining = Math.max(0, Math.round((quote.expiresAt - Date.now()) / 1000));
+      setExpiresIn(newTimeRemaining);
+      
+      if (newTimeRemaining <= 0) {
+        clearInterval(timer);
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [quote.expiresAt]);
   
   return (
     <div style={{ 
@@ -39,9 +56,12 @@ export function QuoteReadyComponent({ quote, onExecuteWithdrawal, isExecuting }:
         <div style={{ marginBottom: '0.5rem' }}>
           <strong>Total:</strong> {quote.estimatedTotal}
         </div>
-        <div style={{ color: expiresIn < 60 ? '#dc3545' : '#6c757d' }}>
-          <strong>Expires in:</strong> {expiresIn}s
-        </div>
+        <ExpiresInComponent 
+          expiresAt={quote.expiresAt}
+          label="Expires in:"
+          size="normal"
+          showIcon={true}
+        />
       </div>
       <button
         onClick={onExecuteWithdrawal}

@@ -30,15 +30,20 @@ const handleStartNewWithdrawal = () => {
 };
 
 export default function Home() {
+    const [selectedExchange, setSelectedExchange] = React.useState<'coinbase' | 'kraken' | 'gemini'>('coinbase');
 
     // FIXME: ⨯ ReferenceError: localStorage is not defined
-    const PREVIOUSLY_CONNECTED_WALLET_ID = localStorage.getItem('connectedWalletId') || 'unknown-wallet-id';
-    const PREVIOUSLY_CONNECTED_EXCHANGE = localStorage.getItem('connectedExchange') || 'coinbase';
+    const PREVIOUSLY_CONNECTED_WALLET_ID =
+        // helpatbluvo's kraken
+        "a107c79d-a302-49c2-ae90-2a47aaa90586"
+        // flo's coinbase
+        // "624ed616-ba33-44e0-a9a1-896bd9804f75";
+        // localStorage.getItem('connectedWalletId') || 'unknown-wallet-id';
 
     // Initialize the flow with server action callbacks
     const flow = useBluvoFlow({
-        orgId: "a2e98409-cd68-48c4-853c-73d9228764c0",
-        projectId: "b16e1c13-74ad-4b95-b252-0c12e2215b18", // <- deprecated soon to be removed
+        orgId: "imSgZyiY2EsbKboJzbbhMDHcknWB3pfY",
+        projectId: "VOPomUho1UWAfLc2To9uCYdcZ2dGDeR7",
 
         fetchWithdrawableBalanceFn: fetchWithdrawableBalances,
         requestQuotationFn: requestQuotation,
@@ -56,14 +61,15 @@ export default function Home() {
 
     const handleStartFlow = async () => {
         await flow.startWithdrawalFlow({
-            exchange: 'coinbase',
+            exchange: selectedExchange,
             walletId: generateId()
         });
     };
 
+    // TODO: add a state "wallet:resuming" to show a loading spinner while resuming invoked by resumeWithdrawalFlow
     const handleResumeFlow = async () => {
         await flow.resumeWithdrawalFlow({
-            exchange: PREVIOUSLY_CONNECTED_EXCHANGE,
+            exchange: selectedExchange,
             walletId: PREVIOUSLY_CONNECTED_WALLET_ID
         });
     };
@@ -76,6 +82,30 @@ export default function Home() {
                 {!flow.state && (
                     <div style={{ textAlign: 'center', padding: '2rem' }}>
                         <h2>Choose an Option</h2>
+                        
+                        <div style={{ marginBottom: '2rem' }}>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1rem', fontWeight: 'bold' }}>
+                                Select Exchange:
+                            </label>
+                            <select
+                                value={selectedExchange}
+                                onChange={(e) => setSelectedExchange(e.target.value as 'coinbase' | 'kraken' | 'gemini')}
+                                style={{
+                                    padding: '0.5rem 1rem',
+                                    fontSize: '1rem',
+                                    borderRadius: '0.25rem',
+                                    border: '1px solid #444',
+                                    backgroundColor: '#2a2a2a',
+                                    color: 'white',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                <option value="coinbase">Coinbase</option>
+                                <option value="kraken">Kraken</option>
+                                <option value="gemini">Gemini</option>
+                            </select>
+                        </div>
+                        
                         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '2rem' }}>
                             <button
                                 onClick={handleStartFlow}

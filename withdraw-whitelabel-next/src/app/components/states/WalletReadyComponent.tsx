@@ -14,6 +14,7 @@ interface Network {
 interface Balance {
   asset: string;
   balance: string;
+  balanceInFiat?: string;
   networks?: Network[];
 }
 
@@ -185,7 +186,7 @@ export function WalletReadyComponent({ balances, onRequestQuote }: WalletReadyCo
             <option value="">-- Select Asset --</option>
             {balances.map((balance) => (
               <option key={balance.asset} value={balance.asset}>
-                {balance.asset} - Balance: {balance.balance}
+                {balance.asset} - Balance: {balance.balance} - USD Balance: {balance.balanceInFiat || 'N/A'}
               </option>
             ))}
           </select>

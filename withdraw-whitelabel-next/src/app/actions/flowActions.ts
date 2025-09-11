@@ -1,6 +1,6 @@
 'use server'
 
-import {createClient} from "@bluvo/sdk-ts";
+import {createClient, createDevClient, createSandboxClient} from "@bluvo/sdk-ts";
 
 export async function fetchWithdrawableBalances(walletId: string) {
     return await getWithdrawableBalanceById(walletId);
@@ -13,10 +13,23 @@ function loadBluvoClient() {
     }
 
     // uses localhost dev server URL
+    // return createDevClient({
+    //     orgId: process.env.BLUVO_ORG_ID,
+    //     projectId: process.env.BLUVO_PROJECT_ID,
+    //     apiKey: process.env.BLUVO_API_KEY,
+    // });
+
+    // uses sandbox server URL
+    // return createSandboxClient({
+    //     orgId: process.env.BLUVO_ORG_ID || '',
+    //     projectId: process.env.BLUVO_PROJECT_ID || '',
+    //     apiKey: process.env.BLUVO_API_KEY || '',
+    // });
+
     return createClient({
-        orgId: process.env.BLUVO_ORG_ID,
-        projectId: process.env.BLUVO_PROJECT_ID,
-        apiKey: process.env.BLUVO_API_KEY,
+        orgId: process.env.BLUVO_ORG_ID || '',
+        projectId: process.env.BLUVO_PROJECT_ID || '',
+        apiKey: process.env.BLUVO_API_KEY || '',
     });
 }
 

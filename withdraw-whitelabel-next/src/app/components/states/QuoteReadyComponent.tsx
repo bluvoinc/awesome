@@ -7,6 +7,10 @@ interface Quote {
   amount: string;
   estimatedFee: string;
   estimatedTotal: string;
+
+    amountWithFeeInFiat: string;
+    amountNoFeeInFiat: string;
+    estimatedFeeInFiat: string;
   expiresAt: number;
 }
 
@@ -48,13 +52,13 @@ export function QuoteReadyComponent({ quote, onExecuteWithdrawal, isExecuting }:
           <strong>Asset:</strong> {quote.asset}
         </div>
         <div style={{ marginBottom: '0.5rem' }}>
-          <strong>Amount:</strong> {quote.amount}
+          <strong>Amount:</strong> {quote.amount} (${quote.amountNoFeeInFiat} without fee, ${quote.amountWithFeeInFiat} with fee)
         </div>
         <div style={{ marginBottom: '0.5rem' }}>
-          <strong>Fee:</strong> {quote.estimatedFee}
+          <strong>Fee:</strong> {quote.estimatedFee} (${quote.estimatedFeeInFiat})
         </div>
         <div style={{ marginBottom: '0.5rem' }}>
-          <strong>Total:</strong> {quote.estimatedTotal}
+          <strong>Total:</strong> {quote.estimatedTotal} (${quote.amountWithFeeInFiat})
         </div>
         <ExpiresInComponent 
           expiresAt={quote.expiresAt}

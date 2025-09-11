@@ -6,8 +6,13 @@ interface WithdrawalQuoteProps {
   quote: {
     amount: number;
     estimatedFee: number;
-      estimatedTotal: number;
-    destinationAddress: string;
+    estimatedTotal: number;
+
+      amountWithFeeInFiat: string;
+      amountNoFeeInFiat: string;
+      estimatedFeeInFiat: string;
+
+      destinationAddress: string;
     expiresAt: string;
   };
   twoFactorCode: string;

@@ -8,6 +8,7 @@ import {
 } from '../actions/flowActions';
 
 // State-specific components
+import {StartFlowComponent} from '../components/states/StartFlowComponent';
 import {OAuthPendingComponent} from '../components/states/OAuthPendingComponent';
 import {WalletLoadingComponent} from '../components/states/WalletLoadingComponent';
 import {WalletReadyComponent} from '../components/states/WalletReadyComponent';
@@ -18,6 +19,7 @@ import {RequireSMSCode} from '../components/states/RequireSMSCode';
 import {RequireKYCComponent} from '../components/states/RequireKYCComponent';
 import {WithdrawalCompletedComponent} from '../components/states/WithdrawalCompletedComponent';
 import {ErrorComponent} from '../components/states/ErrorComponent';
+import {StateSimulator} from '../components/StateSimulator';
 
 import styles from '../page.module.css';
 import { useBluvoFlow } from "@bluvo/react";
@@ -31,10 +33,19 @@ const handleStartNewWithdrawal = () => {
 
 export default function Home() {
     const [selectedExchange, setSelectedExchange] = React.useState<'coinbase' | 'kraken' | 'gemini'>('coinbase');
-    const [showOAuthClosedMessage, setShowOAuthClosedMessage] = React.useState(false);
+    const [showOAuthClosedMessage, setShowOAuthClosedMessage] =
+        React.useState(false);
+    const [useSimulator, setUseSimulator] = React.useState(false);
 
     // FIXME: ⨯ ReferenceError: localStorage is not defined
-    const PREVIOUSLY_CONNECTED_WALLET_ID = "your-prev-wallet-id"
+    const PREVIOUSLY_CONNECTED_WALLET_ID =
+        // helpatbluvo's kraken
+        // "a107c79d-a302-49c2-ae90-2a47aaa90586"
+        // flo's coinbase
+        "fdab8410-0f9b-41c5-8a4a-cc44401d9d78"
+        // "345b0e00-e979-4873-be4d-653b802253b4",
+        //"624ed616-ba33-44e0-a9a1-896bd9804f75";
+        // localStorage.getItem('connectedWalletId') || 'unknown-wallet-id';
 
     // Initialize the flow with server action callbacks
     const flow = useBluvoFlow({
@@ -85,270 +96,260 @@ export default function Home() {
         }
     }, [flow.isOAuthWindowBeenClosedByTheUser, flow]);
 
+    // Function to render the flow UI (used by both real flow and simulator)
+    const renderFlowUI = (flowState: typeof flow) => (
+        <>
+            {/* OAuth Window Closed by User Message */}
+            {showOAuthClosedMessage && (
+                <div style={{
+                    textAlign: 'center',
+                    padding: '3rem',
+                    backgroundColor: '#000',
+                    borderRadius: '1rem',
+                    border: '2px solid #dc3545',
+                    maxWidth: '500px',
+                    margin: '2rem auto'
+                }}>
+                    <div style={{
+                        fontSize: '3rem',
+                        marginBottom: '1rem'
+                    }}>
+                        ❌
+                    </div>
+                    <h2 style={{
+                        color: '#dc3545',
+                        marginBottom: '1rem',
+                        fontSize: '1.5rem'
+                    }}>
+                        OAuth Window Closed
+                    </h2>
+                    <p style={{
+                        fontSize: '1.1rem',
+                        color: '#ccc',
+                        marginBottom: '1.5rem'
+                    }}>
+                        You closed the authentication window before completing the process.
+                    </p>
+                    <p style={{
+                        fontSize: '0.9rem',
+                        color: '#888'
+                    }}>
+                        Returning to exchange selection in 3 seconds...
+                    </p>
+                    <div style={{
+                        marginTop: '1rem',
+                        display: 'inline-block',
+                        width: '20px',
+                        height: '20px',
+                        border: '3px solid #444',
+                        borderTop: '3px solid #dc3545',
+                        borderRadius: '50%',
+                        animation: 'spin 1s linear infinite'
+                    }}></div>
+                </div>
+            )}
+
+            {!flowState.state && !showOAuthClosedMessage && (
+                <div style={{ textAlign: 'center', padding: '2rem' }}>
+                    <h2>Choose an Option</h2>
+                    
+                    <div style={{ marginBottom: '2rem' }}>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1rem', fontWeight: 'bold' }}>
+                            Select Exchange:
+                        </label>
+                        <select
+                            value={selectedExchange}
+                            onChange={(e) => setSelectedExchange(e.target.value as 'coinbase' | 'kraken' | 'gemini')}
+                            style={{
+                                padding: '0.5rem 1rem',
+                                fontSize: '1rem',
+                                borderRadius: '0.25rem',
+                                border: '1px solid #444',
+                                backgroundColor: '#2a2a2a',
+                                color: 'white',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            <option value="coinbase">Coinbase</option>
+                            <option value="kraken">Kraken</option>
+                            <option value="gemini">Gemini</option>
+                        </select>
+                    </div>
+                    
+                    <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '2rem' }}>
+                        <button
+                            onClick={handleStartFlow}
+                            style={{
+                                padding: '1rem 2rem',
+                                backgroundColor: '#007bff',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '0.5rem',
+                                fontSize: '1rem',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            Start New Withdrawal
+                        </button>
+                        <button
+                            onClick={handleResumeFlow}
+                            style={{
+                                padding: '1rem 2rem',
+                                backgroundColor: '#28a745',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '0.5rem',
+                                fontSize: '1rem',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            Resume with Existing Wallet
+                        </button>
+                    </div>
+                    <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#6c757d' }}>
+                        Resume uses wallet ID: {PREVIOUSLY_CONNECTED_WALLET_ID.slice(0, 8)}...
+                    </p>
+                </div>
+            )}
+            
+            {flowState.isOAuthPending && <OAuthPendingComponent onCancel={flowState.cancel} />}
+            
+            {flowState.isWalletLoading && <WalletLoadingComponent />}
+            
+            {flowState.isWalletReady && <WalletReadyComponent
+                balances={flowState.walletBalances || []}
+                onRequestQuote={flowState.requestQuote}
+            />}
+            
+            {flowState.isQuoteLoading && <QuoteLoadingComponent />}
+            
+            {flowState.isQuoteReady && flowState.quote && (
+                <QuoteReadyComponent
+                    quote={flowState.quote}
+                    onExecuteWithdrawal={() => flowState.executeWithdrawal(flowState.quote!.id)}
+                    isExecuting={flowState.isWithdrawing}
+                />
+            )}
+            
+            {flowState.isQuoteExpired && (
+                <ErrorComponent
+                    error={new Error('Quote has expired. Please start a new withdrawal.')}
+                    onCancel={handleStartNewWithdrawal}
+                />
+            )}
+            
+            {flowState.requires2FA && (
+                <RequireTwoFactorAuthenticationCode
+                    onSubmit2FA={flowState.submit2FA}
+                    isSubmitting={false}
+                    invalid2FAAttempts={flowState.invalid2FAAttempts || 0}
+                    expiresAt={flowState.quote?.expiresAt}
+                />
+            )}
+            
+            {flowState.requiresSMS && (
+                <RequireSMSCode
+                    onSubmitSMS={flowState.submitSMS}
+                    isSubmitting={false}
+                />
+            )}
+            
+            {flowState.requiresKYC && <RequireKYCComponent onCancel={flowState.cancel} />}
+            
+            {flowState.isWithdrawalComplete && flowState.withdrawal && (
+                <WithdrawalCompletedComponent
+                    withdrawal={flowState.withdrawal}
+                    onStartNew={handleStartNewWithdrawal}
+                />
+            )}
+
+            {flowState.canRetry && (
+                <ErrorComponent
+                    error={new Error('Withdrawal failed but can be retried')}
+                    onRetry={flowState.retryWithdrawal}
+                    onCancel={flowState.cancel}
+                    canRetry={true}
+                />
+            )}
+            
+            {flowState.hasFatalError && (
+                <ErrorComponent
+                    error={flowState.error || new Error('A fatal error occurred during withdrawal')}
+                    onCancel={handleStartNewWithdrawal}
+                />
+            )}
+            
+            {flowState.isWithdrawing && (
+                <div style={{textAlign: 'center', padding: '2rem'}}>
+                    <h2>🔄 Processing Withdrawal</h2>
+                    <p>Current state: {flowState.state?.type}</p>
+                    <div style={{margin: '1rem 0'}}>
+                        <div className="spinner" style={{
+                            display: 'inline-block',
+                            width: '20px',
+                            height: '20px',
+                            border: '3px solid #f3f3f3',
+                            borderTop: '3px solid #007bff',
+                            borderRadius: '50%',
+                            animation: 'spin 2s linear infinite'
+                        }}></div>
+                    </div>
+                </div>
+            )}
+            
+            {flowState.state && !flowState.isOAuthPending && !flowState.isWalletLoading && !flowState.isWalletReady && 
+             !flowState.isQuoteLoading && !flowState.isQuoteReady && !flowState.isQuoteExpired && 
+             !flowState.requires2FA && !flowState.requiresSMS && !flowState.requiresKYC && 
+             !flowState.isWithdrawalComplete && !flowState.canRetry && !flowState.hasFatalError && 
+             !flowState.hasError && !flowState.isWithdrawing && !flowState.isOAuthWindowBeenClosedByTheUser && (
+                <div style={{textAlign: 'center', padding: '2rem'}}>
+                    <h2>Unknown State</h2>
+                    <p>Current state: {flowState.state?.type}</p>
+                    <button onClick={handleStartNewWithdrawal}>
+                        Restart
+                    </button>
+                </div>
+            )}
+        </>
+    );
+
     return (
         <div className={styles.page}>
             <main className={styles.main}>
                 <h1>Bluvo Withdrawal Flow</h1>
 
-                {/* OAuth Window Closed by User Message */}
-                {showOAuthClosedMessage && (
-                    <div style={{
-                        textAlign: 'center',
-                        padding: '3rem',
-                        backgroundColor: '#000',
-                        borderRadius: '1rem',
-                        border: '2px solid #dc3545',
-                        maxWidth: '500px',
-                        margin: '2rem auto'
-                    }}>
-                        <div style={{
-                            fontSize: '3rem',
-                            marginBottom: '1rem'
-                        }}>
-                            ❌
-                        </div>
-                        <h2 style={{
-                            color: '#dc3545',
-                            marginBottom: '1rem',
-                            fontSize: '1.5rem'
-                        }}>
-                            OAuth Window Closed
-                        </h2>
-                        <p style={{
-                            fontSize: '1.1rem',
-                            color: '#ccc',
-                            marginBottom: '1.5rem'
-                        }}>
-                            You closed the authentication window before completing the process.
-                        </p>
-                        <p style={{
-                            fontSize: '0.9rem',
-                            color: '#888'
-                        }}>
-                            Returning to exchange selection in 3 seconds...
-                        </p>
-                        <div style={{
-                            marginTop: '1rem',
-                            display: 'inline-block',
-                            width: '20px',
-                            height: '20px',
-                            border: '3px solid #444',
-                            borderTop: '3px solid #dc3545',
-                            borderRadius: '50%',
-                            animation: 'spin 1s linear infinite'
-                        }}></div>
-                    </div>
+                {/* Render real flow by default, or simulator when enabled */}
+                {useSimulator ? (
+                    <StateSimulator>
+                        {(simulatedFlow) => renderFlowUI(simulatedFlow as any)}
+                    </StateSimulator>
+                ) : (
+                    renderFlowUI(flow)
                 )}
 
-                {!flow.state && !showOAuthClosedMessage && (
-                    <div style={{ textAlign: 'center', padding: '2rem' }}>
-                        <h2>Choose an Option</h2>
-                        
-                        <div style={{ marginBottom: '2rem' }}>
-                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1rem', fontWeight: 'bold' }}>
-                                Select Exchange:
-                            </label>
-                            <select
-                                value={selectedExchange}
-                                onChange={(e) => setSelectedExchange(e.target.value as 'coinbase' | 'kraken' | 'gemini')}
-                                style={{
-                                    padding: '0.5rem 1rem',
-                                    fontSize: '1rem',
-                                    borderRadius: '0.25rem',
-                                    border: '1px solid #444',
-                                    backgroundColor: '#2a2a2a',
-                                    color: 'white',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                <option value="coinbase">Coinbase</option>
-                                <option value="kraken">Kraken</option>
-                                <option value="gemini">Gemini</option>
-                            </select>
-                        </div>
-                        
-                        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '2rem' }}>
-                            <button
-                                onClick={handleStartFlow}
-                                style={{
-                                    padding: '1rem 2rem',
-                                    backgroundColor: '#007bff',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '0.5rem',
-                                    fontSize: '1rem',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                Start New Withdrawal
-                            </button>
-                            <button
-                                onClick={handleResumeFlow}
-                                style={{
-                                    padding: '1rem 2rem',
-                                    backgroundColor: '#28a745',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '0.5rem',
-                                    fontSize: '1rem',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                Resume with Existing Wallet
-                            </button>
-                        </div>
-                        <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#6c757d' }}>
-                            Resume uses wallet ID: {PREVIOUSLY_CONNECTED_WALLET_ID.slice(0, 8)}...
-                        </p>
-                    </div>
-                )}
-                
-                {flow.isOAuthPending && <OAuthPendingComponent onCancel={flow.cancel} />}
-                
-                {flow.isWalletLoading && <WalletLoadingComponent />}
-                
-                {flow.isWalletReady && <WalletReadyComponent
-                    balances={flow.walletBalances}
-                    onRequestQuote={flow.requestQuote}
-                />}
-                
-                {flow.isQuoteLoading && <QuoteLoadingComponent />}
-                
-                {flow.isQuoteReady && flow.quote && (
-                    <QuoteReadyComponent
-                        quote={flow.quote}
-                        onExecuteWithdrawal={() => flow.executeWithdrawal(flow.quote!.id)}
-                        isExecuting={flow.isWithdrawing}
-                    />
-                )}
-                
-                {flow.isQuoteExpired && (
-                    <ErrorComponent
-                        error={new Error('Quote has expired. Please start a new withdrawal.')}
-                        onCancel={handleStartNewWithdrawal}
-                    />
-                )}
-                
-                {flow.requires2FA && (
-                    <RequireTwoFactorAuthenticationCode
-                        onSubmit2FA={flow.submit2FA}
-                        isSubmitting={false}
-                        invalid2FAAttempts={flow.invalid2FAAttempts}
-                        expiresAt={flow.quote?.expiresAt}
-                    />
-                )}
-                
-                {flow.requiresSMS && (
-                    <RequireSMSCode
-                        onSubmitSMS={flow.submitSMS}
-                        isSubmitting={false}
-                    />
-                )}
-                
-                {flow.requiresKYC && <RequireKYCComponent onCancel={flow.cancel} />}
-                
-                {flow.isWithdrawalComplete && flow.withdrawal && (
-                    <WithdrawalCompletedComponent
-                        withdrawal={flow.withdrawal}
-                        onStartNew={handleStartNewWithdrawal}
-                    />
-                )}
+                {/* Toggle button to enable/disable simulator */}
+                <button
+                    onClick={() => setUseSimulator(!useSimulator)}
+                    style={{
+                        position: 'fixed',
+                        bottom: '20px',
+                        right: '20px',
+                        zIndex: 1000,
+                        padding: '10px 15px',
+                        backgroundColor: useSimulator ? '#00ff00' : '#1e1e1e',
+                        color: useSimulator ? '#000' : '#00ff00',
+                        border: '2px solid #00ff00',
+                        borderRadius: '8px',
+                        fontFamily: 'monospace',
+                        fontSize: '14px',
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
+                        transition: 'all 0.2s ease',
+                    }}
+                >
+                    🔧 {useSimulator ? 'Exit Simulator' : 'Enable Simulator'}
+                </button>
 
-                {flow.canRetry && (
-                    <ErrorComponent
-                        error={new Error('Withdrawal failed but can be retried')}
-                        onRetry={flow.retryWithdrawal}
-                        onCancel={flow.cancel}
-                        canRetry={true}
-                    />
-                )}
-                
-                {flow.hasFatalError && (
-                    <ErrorComponent
-                        error={flow.error || new Error('A fatal error occurred during withdrawal')}
-                        onCancel={handleStartNewWithdrawal}
-                    />
-                )}
-
-                {/*{flow.hasError && (*/}
-                {/*    <ErrorComponent*/}
-                {/*        error={flow.error!}*/}
-                {/*        onCancel={handleStartNewWithdrawal}*/}
-                {/*    />*/}
-                {/*)}*/}
-                
-                {flow.isWithdrawing && (
-                    <div style={{textAlign: 'center', padding: '2rem'}}>
-                        <h2>🔄 Processing Withdrawal</h2>
-                        <p>Current state: {flow.state?.type}</p>
-                        <div style={{margin: '1rem 0'}}>
-                            <div className="spinner" style={{
-                                display: 'inline-block',
-                                width: '20px',
-                                height: '20px',
-                                border: '3px solid #f3f3f3',
-                                borderTop: '3px solid #007bff',
-                                borderRadius: '50%',
-                                animation: 'spin 2s linear infinite'
-                            }}></div>
-                        </div>
-                    </div>
-                )}
-                
-                {flow.state && !flow.isOAuthPending && !flow.isWalletLoading && !flow.isWalletReady && 
-                 !flow.isQuoteLoading && !flow.isQuoteReady && !flow.isQuoteExpired && 
-                 !flow.requires2FA && !flow.requiresSMS && !flow.requiresKYC && 
-                 !flow.isWithdrawalComplete && !flow.canRetry && !flow.hasFatalError && 
-                 !flow.hasError && !flow.isWithdrawing && (
-                    <div style={{textAlign: 'center', padding: '2rem'}}>
-                        <h2>Unknown State</h2>
-                        <p>Current state: {flow.state?.type}</p>
-                        <button onClick={handleStartNewWithdrawal}>
-                            Restart
-                        </button>
-                    </div>
-                )}
-
-                {/* 
-                ==============================================
-                TEST SECTION - COMMENT/UNCOMMENT AS NEEDED 
-                ==============================================
-                */}
-                {/*{flow.isWithdrawing && (*/}
-                {/*    <div style={{*/}
-                {/*        marginTop: '2rem',*/}
-                {/*        padding: '1rem',*/}
-                {/*        backgroundColor: '#2a2a2a',*/}
-                {/*        borderRadius: '0.5rem',*/}
-                {/*        border: '2px dashed #ffc107',*/}
-                {/*        textAlign: 'center'*/}
-                {/*    }}>*/}
-                {/*        <h3 style={{ color: '#ffc107', margin: '0 0 1rem 0' }}>🧪 TEST ZONE</h3>*/}
-                {/*        <p style={{ color: '#ccc', fontSize: '0.9rem', margin: '0 0 1rem 0' }}>*/}
-                {/*            Click below to simulate withdrawal completion without real transaction*/}
-                {/*        </p>*/}
-                {/*        <button*/}
-                {/*            onClick={() => flow.testWithdrawalComplete()}*/}
-                {/*            style={{*/}
-                {/*                padding: '0.75rem 1.5rem',*/}
-                {/*                fontSize: '1rem',*/}
-                {/*                backgroundColor: '#dc3545',*/}
-                {/*                color: 'white',*/}
-                {/*                border: 'none',*/}
-                {/*                borderRadius: '0.25rem',*/}
-                {/*                cursor: 'pointer',*/}
-                {/*                fontWeight: 'bold'*/}
-                {/*            }}*/}
-                {/*        >*/}
-                {/*            🧪 TEST: Simulate Withdrawal Complete*/}
-                {/*        </button>*/}
-                {/*        <p style={{ color: '#888', fontSize: '0.8rem', margin: '0.5rem 0 0 0' }}>*/}
-                {/*            Check console for detailed logs*/}
-                {/*        </p>*/}
-                {/*    </div>*/}
-                {/*)}*/}
-
-                
                 {/* Debug Info */}
                 <details style={{marginTop: '2rem', fontSize: '0.8rem'}}>
                     <summary>Debug Info</summary>
@@ -358,13 +359,13 @@ export default function Home() {
                         borderRadius: '0.25rem',
                         overflow: 'auto'
                     }}>
-            {JSON.stringify({
-                state: flow.state?.type,
-                context: flow.context,
-                error: flow.error?.message,
-                invalid2FAAttempts: flow.invalid2FAAttempts
-            }, null, 2)}
-          </pre>
+                        {JSON.stringify({
+                            state: flow.state?.type,
+                            context: flow.context,
+                            error: flow.error?.message,
+                            invalid2FAAttempts: flow.invalid2FAAttempts
+                        }, null, 2)}
+                    </pre>
                 </details>
             </main>
 

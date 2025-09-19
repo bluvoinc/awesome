@@ -31,14 +31,10 @@ const handleStartNewWithdrawal = () => {
 
 export default function Home() {
     const [selectedExchange, setSelectedExchange] = React.useState<'coinbase' | 'kraken' | 'gemini'>('coinbase');
+    const [showOAuthClosedMessage, setShowOAuthClosedMessage] = React.useState(false);
 
     // FIXME: ⨯ ReferenceError: localStorage is not defined
-    const PREVIOUSLY_CONNECTED_WALLET_ID =
-        // helpatbluvo's kraken
-        "a107c79d-a302-49c2-ae90-2a47aaa90586"
-        // flo's coinbase
-        // "624ed616-ba33-44e0-a9a1-896bd9804f75";
-        // localStorage.getItem('connectedWalletId') || 'unknown-wallet-id';
+    const PREVIOUSLY_CONNECTED_WALLET_ID = "your-prev-wallet-id"
 
     // Initialize the flow with server action callbacks
     const flow = useBluvoFlow({
@@ -74,12 +70,77 @@ export default function Home() {
         });
     };
 
+    // Handle OAuth window closed by user
+    React.useEffect(() => {
+        if (flow.isOAuthWindowBeenClosedByTheUser) {
+            setShowOAuthClosedMessage(true);
+            
+            // Set timeout to return to default UI after 3 seconds
+            const timer = setTimeout(() => {
+                setShowOAuthClosedMessage(false);
+                flow.cancel(); // Cancel the flow to reset to initial state
+            }, 3000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [flow.isOAuthWindowBeenClosedByTheUser, flow]);
+
     return (
         <div className={styles.page}>
             <main className={styles.main}>
                 <h1>Bluvo Withdrawal Flow</h1>
 
-                {!flow.state && (
+                {/* OAuth Window Closed by User Message */}
+                {showOAuthClosedMessage && (
+                    <div style={{
+                        textAlign: 'center',
+                        padding: '3rem',
+                        backgroundColor: '#000',
+                        borderRadius: '1rem',
+                        border: '2px solid #dc3545',
+                        maxWidth: '500px',
+                        margin: '2rem auto'
+                    }}>
+                        <div style={{
+                            fontSize: '3rem',
+                            marginBottom: '1rem'
+                        }}>
+                            ❌
+                        </div>
+                        <h2 style={{
+                            color: '#dc3545',
+                            marginBottom: '1rem',
+                            fontSize: '1.5rem'
+                        }}>
+                            OAuth Window Closed
+                        </h2>
+                        <p style={{
+                            fontSize: '1.1rem',
+                            color: '#ccc',
+                            marginBottom: '1.5rem'
+                        }}>
+                            You closed the authentication window before completing the process.
+                        </p>
+                        <p style={{
+                            fontSize: '0.9rem',
+                            color: '#888'
+                        }}>
+                            Returning to exchange selection in 3 seconds...
+                        </p>
+                        <div style={{
+                            marginTop: '1rem',
+                            display: 'inline-block',
+                            width: '20px',
+                            height: '20px',
+                            border: '3px solid #444',
+                            borderTop: '3px solid #dc3545',
+                            borderRadius: '50%',
+                            animation: 'spin 1s linear infinite'
+                        }}></div>
+                    </div>
+                )}
+
+                {!flow.state && !showOAuthClosedMessage && (
                     <div style={{ textAlign: 'center', padding: '2rem' }}>
                         <h2>Choose an Option</h2>
                         

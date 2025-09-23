@@ -4,11 +4,11 @@ import React from 'react';
 import {
     fetchWithdrawableBalances,
     requestQuotation,
-    executeWithdrawal
+    executeWithdrawal,
+    listExchanges
 } from '../actions/flowActions';
 
 // State-specific components
-import {StartFlowComponent} from '../components/states/StartFlowComponent';
 import {OAuthPendingComponent} from '../components/states/OAuthPendingComponent';
 import {WalletLoadingComponent} from '../components/states/WalletLoadingComponent';
 import {WalletReadyComponent} from '../components/states/WalletReadyComponent';
@@ -32,7 +32,7 @@ const handleStartNewWithdrawal = () => {
 };
 
 export default function Home() {
-    const [selectedExchange, setSelectedExchange] = React.useState<'coinbase' | 'kraken' | 'gemini'>('coinbase');
+    const [selectedExchange, setSelectedExchange] = React.useState<string>('');
     const [showOAuthClosedMessage, setShowOAuthClosedMessage] =
         React.useState(false);
     const [useSimulator, setUseSimulator] = React.useState(false);
@@ -42,8 +42,8 @@ export default function Home() {
         // helpatbluvo's kraken
         // "a107c79d-a302-49c2-ae90-2a47aaa90586"
         // flo's coinbase
-        "fdab8410-0f9b-41c5-8a4a-cc44401d9d78"
-        // "345b0e00-e979-4873-be4d-653b802253b4",
+        // "fdab8410-0f9b-41c5-8a4a-cc44401d9d78"
+        "345b0e00-e979-4873-be4d-653b802253b4"
         //"624ed616-ba33-44e0-a9a1-896bd9804f75";
         // localStorage.getItem('connectedWalletId') || 'unknown-wallet-id';
 
@@ -52,6 +52,7 @@ export default function Home() {
         orgId: "imSgZyiY2EsbKboJzbbhMDHcknWB3pfY",
         projectId: "VOPomUho1UWAfLc2To9uCYdcZ2dGDeR7",
 
+        listExchangesFn: listExchanges,
         fetchWithdrawableBalanceFn: fetchWithdrawableBalances,
         requestQuotationFn: requestQuotation,
         executeWithdrawalFn: executeWithdrawal,
@@ -66,10 +67,33 @@ export default function Home() {
         }
     });
 
+    // Load exchanges on component mount
+    React.useEffect(() => {
+        const loadExchanges = async () => {
+            try {
+                await flow.listExchanges('live'); // Only load live exchanges
+                // Set default selection to first available exchange
+                if (flow.exchanges.length > 0 && !selectedExchange) {
+                    setSelectedExchange(flow.exchanges[0].id);
+                }
+            } catch (error) {
+                console.error('Failed to load exchanges:', error);
+            }
+        };
+        loadExchanges();
+    }, [flow.exchanges.length, selectedExchange]);
+
     const handleStartFlow = async () => {
         await flow.startWithdrawalFlow({
             exchange: selectedExchange,
-            walletId: generateId()
+            walletId: generateId(),
+            // optional:
+            // popupOptions: {
+            //     width: 500,
+            //     height: 650,
+            //     left: window.screenX + (window.outerWidth - 500) / 2,
+            //     top: window.screenY + (window.outerHeight - 700) / 2
+            // }
         });
     };
 
@@ -157,50 +181,65 @@ export default function Home() {
                         <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1rem', fontWeight: 'bold' }}>
                             Select Exchange:
                         </label>
-                        <select
-                            value={selectedExchange}
-                            onChange={(e) => setSelectedExchange(e.target.value as 'coinbase' | 'kraken' | 'gemini')}
-                            style={{
-                                padding: '0.5rem 1rem',
-                                fontSize: '1rem',
-                                borderRadius: '0.25rem',
-                                border: '1px solid #444',
-                                backgroundColor: '#2a2a2a',
-                                color: 'white',
-                                cursor: 'pointer'
-                            }}
-                        >
-                            <option value="coinbase">Coinbase</option>
-                            <option value="kraken">Kraken</option>
-                            <option value="gemini">Gemini</option>
-                        </select>
+                        {flow.isExchangesLoading ? (
+                            <div style={{ color: '#ccc' }}>Loading exchanges...</div>
+                        ) : flow.exchangesError ? (
+                            <div style={{ color: '#dc3545' }}>Error loading exchanges: {flow.exchangesError.message}</div>
+                        ) : (
+                            <select
+                                value={selectedExchange}
+                                onChange={(e) => setSelectedExchange(e.target.value)}
+                                disabled={flow.exchanges.length === 0}
+                                style={{
+                                    padding: '0.5rem 1rem',
+                                    fontSize: '1rem',
+                                    borderRadius: '0.25rem',
+                                    border: '1px solid #444',
+                                    backgroundColor: '#2a2a2a',
+                                    color: 'white',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                {flow.exchanges.length === 0 ? (
+                                    <option value="">No exchanges available</option>
+                                ) : (
+                                    flow.exchanges.map((exchange) => (
+                                        <option key={exchange.id} value={exchange.id}>
+                                            {exchange.name}
+                                        </option>
+                                    ))
+                                )}
+                            </select>
+                        )}
                     </div>
                     
                     <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '2rem' }}>
                         <button
                             onClick={handleStartFlow}
+                            disabled={!selectedExchange || flow.isExchangesLoading}
                             style={{
                                 padding: '1rem 2rem',
-                                backgroundColor: '#007bff',
+                                backgroundColor: (!selectedExchange || flow.isExchangesLoading) ? '#555' : '#007bff',
                                 color: 'white',
                                 border: 'none',
                                 borderRadius: '0.5rem',
                                 fontSize: '1rem',
-                                cursor: 'pointer'
+                                cursor: (!selectedExchange || flow.isExchangesLoading) ? 'not-allowed' : 'pointer'
                             }}
                         >
                             Start New Withdrawal
                         </button>
                         <button
                             onClick={handleResumeFlow}
+                            disabled={!selectedExchange || flow.isExchangesLoading}
                             style={{
                                 padding: '1rem 2rem',
-                                backgroundColor: '#28a745',
+                                backgroundColor: (!selectedExchange || flow.isExchangesLoading) ? '#555' : '#28a745',
                                 color: 'white',
                                 border: 'none',
                                 borderRadius: '0.5rem',
                                 fontSize: '1rem',
-                                cursor: 'pointer'
+                                cursor: (!selectedExchange || flow.isExchangesLoading) ? 'not-allowed' : 'pointer'
                             }}
                         >
                             Resume with Existing Wallet

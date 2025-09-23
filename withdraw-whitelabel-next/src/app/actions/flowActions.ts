@@ -6,6 +6,10 @@ export async function fetchWithdrawableBalances(walletId: string) {
     return await getWithdrawableBalanceById(walletId);
 }
 
+export async function listExchanges(status?: 'live' | 'offline' | 'maintenance' | 'coming_soon') {
+    return toPlain(await loadBluvoClient().oauth2.listExchanges(status));
+}
+
 function loadBluvoClient() {
 
     if (!process.env.BLUVO_ORG_ID || !process.env.BLUVO_PROJECT_ID || !process.env.BLUVO_API_KEY) {

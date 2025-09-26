@@ -1,12 +1,56 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Coinbase brand colors */
+  --cb-primary: #0052ff;
+  --cb-primary-hover: #0041d0;
+  --cb-primary-active: #0030a0;
+  --cb-secondary: #f5f8ff;
+  --cb-secondary-hover: #e4ecfd;
+  
+  /* Background colors */
+  --cb-background: #ffffff;
+  --cb-background-secondary: #f5f8ff;
+  --cb-background-tertiary: #fafbfc;
+  
+  /* Text colors */
+  --cb-text-primary: #050f19;
+  --cb-text-secondary: #5b616e;
+  --cb-text-tertiary: #8a919e;
+  
+  /* Border colors */
+  --cb-border: #d5d9dc;
+  --cb-border-focus: #0052ff;
+  
+  /* Status colors */
+  --cb-success: #00d4aa;
+  --cb-error: #df5f67;
+  --cb-warning: #f5a623;
+  
+  /* Shadows */
+  --cb-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+  --cb-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
+  --cb-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.12);
+  
+  /* Transitions */
+  --cb-transition: all 0.2s ease;
+  
+  /* Typography */
+  --cb-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --cb-background: #050f19;
+    --cb-background-secondary: #0a1929;
+    --cb-background-tertiary: #162435;
+    
+    --cb-text-primary: #ffffff;
+    --cb-text-secondary: #aab4c3;
+    --cb-text-tertiary: #6b7785;
+    
+    --cb-border: #2d3748;
+    
+    --cb-secondary: #162435;
+    --cb-secondary-hover: #1a2a3a;
   }
 }
 
@@ -17,11 +61,12 @@ body {
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--cb-text-primary);
+  background: var(--cb-background);
+  font-family: var(--cb-font-family);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
 }
 
 * {
@@ -31,8 +76,120 @@ body {
 }
 
 a {
-  color: inherit;
+  color: var(--cb-primary);
   text-decoration: none;
+  transition: var(--cb-transition);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Global button styles */
+button {
+  font-family: var(--cb-font-family);
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--cb-transition);
+  border: none;
+  padding: 12px 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Primary button */
+button.primary,
+button[style*="007bff"] {
+  background: var(--cb-primary);
+  color: white;
+}
+
+button.primary:hover:not(:disabled),
+button[style*="007bff"]:hover:not(:disabled) {
+  background: var(--cb-primary-hover);
+}
+
+/* Secondary button */
+button.secondary {
+  background: var(--cb-secondary);
+  color: var(--cb-text-primary);
+  border: 1px solid var(--cb-border);
+}
+
+button.secondary:hover:not(:disabled) {
+  background: var(--cb-secondary-hover);
+}
+
+/* Form elements */
+input,
+select,
+textarea {
+  font-family: var(--cb-font-family);
+  font-size: 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--cb-border);
+  border-radius: 8px;
+  background: var(--cb-background);
+  color: var(--cb-text-primary);
+  transition: var(--cb-transition);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--cb-border-focus);
+  box-shadow: 0 0 0 3px rgba(0, 82, 255, 0.1);
+}
+
+select {
+  cursor: pointer;
+}
+
+/* Utility classes */
+.cb-card {
+  background: var(--cb-background);
+  border: 1px solid var(--cb-border);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--cb-shadow-sm);
+}
+
+.cb-section {
+  margin-bottom: 32px;
+}
+
+.cb-text-secondary {
+  color: var(--cb-text-secondary);
+}
+
+.cb-text-tertiary {
+  color: var(--cb-text-tertiary);
+}
+
+/* Spinner animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.spinner {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--cb-border);
+  border-top: 2px solid var(--cb-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
 @media (prefers-color-scheme: dark) {

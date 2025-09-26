@@ -40,25 +40,95 @@ export function QuoteReadyComponent({ quote, onExecuteWithdrawal, isExecuting }:
   }, [quote.expiresAt]);
   
   return (
-    <div style={{ 
-      padding: '1.5rem',
-      backgroundColor: '#000000',
-      borderRadius: '0.5rem',
-      border: '1px solid #28a745'
+    <div className="cb-card" style={{ 
+      maxWidth: '480px',
+      margin: '0 auto'
     }}>
-      <h2>💰 Withdrawal Quote Ready</h2>
-      <div style={{ marginBottom: '1rem' }}>
-        <div style={{ marginBottom: '0.5rem' }}>
-          <strong>Asset:</strong> {quote.asset}
+      <div style={{
+        fontSize: '48px',
+        marginBottom: '16px',
+        lineHeight: '1',
+        textAlign: 'center'
+      }}>💰</div>
+      <h2 style={{
+        fontSize: '20px',
+        fontWeight: '600',
+        marginBottom: '16px',
+        color: 'var(--cb-text-primary)',
+        textAlign: 'center'
+      }}>Withdrawal Quote Ready</h2>
+      <div style={{ 
+        backgroundColor: 'var(--cb-background-secondary)',
+        borderRadius: '8px',
+        padding: '16px',
+        marginBottom: '24px'
+      }}>
+        <div style={{ marginBottom: '12px' }}>
+          <span style={{ 
+            fontSize: '14px',
+            color: 'var(--cb-text-tertiary)',
+            display: 'block',
+            marginBottom: '4px'
+          }}>Asset</span>
+          <span style={{ 
+            fontSize: '16px',
+            color: 'var(--cb-text-primary)',
+            fontWeight: '500'
+          }}>{quote.asset}</span>
         </div>
-        <div style={{ marginBottom: '0.5rem' }}>
-          <strong>Amount:</strong> {quote.amount} (${quote.amountNoFeeInFiat} without fee, ${quote.amountWithFeeInFiat} with fee)
+        <div style={{ marginBottom: '12px' }}>
+          <span style={{ 
+            fontSize: '14px',
+            color: 'var(--cb-text-tertiary)',
+            display: 'block',
+            marginBottom: '4px'
+          }}>Amount</span>
+          <span style={{ 
+            fontSize: '16px',
+            color: 'var(--cb-text-primary)',
+            fontWeight: '500'
+          }}>{quote.amount}</span>
+          <span style={{ 
+            fontSize: '14px',
+            color: 'var(--cb-text-secondary)',
+            marginLeft: '8px'
+          }}>(${quote.amountNoFeeInFiat} without fee, ${quote.amountWithFeeInFiat} with fee)</span>
         </div>
-        <div style={{ marginBottom: '0.5rem' }}>
-          <strong>Fee:</strong> {quote.estimatedFee} (${quote.estimatedFeeInFiat})
+        <div style={{ marginBottom: '12px' }}>
+          <span style={{ 
+            fontSize: '14px',
+            color: 'var(--cb-text-tertiary)',
+            display: 'block',
+            marginBottom: '4px'
+          }}>Fee</span>
+          <span style={{ 
+            fontSize: '16px',
+            color: 'var(--cb-text-primary)',
+            fontWeight: '500'
+          }}>{quote.estimatedFee}</span>
+          <span style={{ 
+            fontSize: '14px',
+            color: 'var(--cb-text-secondary)',
+            marginLeft: '8px'
+          }}>(${quote.estimatedFeeInFiat})</span>
         </div>
-        <div style={{ marginBottom: '0.5rem' }}>
-          <strong>Total:</strong> {quote.estimatedTotal} (${quote.amountWithFeeInFiat})
+        <div style={{ marginBottom: '12px' }}>
+          <span style={{ 
+            fontSize: '14px',
+            color: 'var(--cb-text-tertiary)',
+            display: 'block',
+            marginBottom: '4px'
+          }}>Total</span>
+          <span style={{ 
+            fontSize: '16px',
+            color: 'var(--cb-text-primary)',
+            fontWeight: '500'
+          }}>{quote.estimatedTotal}</span>
+          <span style={{ 
+            fontSize: '14px',
+            color: 'var(--cb-text-secondary)',
+            marginLeft: '8px'
+          }}>(${quote.amountWithFeeInFiat})</span>
         </div>
         <ExpiresInComponent 
           expiresAt={quote.expiresAt}
@@ -71,14 +141,17 @@ export function QuoteReadyComponent({ quote, onExecuteWithdrawal, isExecuting }:
         onClick={onExecuteWithdrawal}
         disabled={isExecuting || expiresIn <= 0}
         style={{
-          padding: '0.75rem 1.5rem',
-          fontSize: '1rem',
-          backgroundColor: expiresIn <= 0 ? '#000' : '#28a745',
+          width: '100%',
+          padding: '12px 24px',
+          fontSize: '16px',
+          fontWeight: '500',
+          backgroundColor: expiresIn <= 0 ? 'var(--cb-text-tertiary)' : 'var(--cb-success)',
           color: 'white',
           border: 'none',
-          borderRadius: '0.25rem',
+          borderRadius: '8px',
           cursor: (isExecuting || expiresIn <= 0) ? 'not-allowed' : 'pointer',
-          width: '100%'
+          transition: 'var(--cb-transition)',
+          opacity: (isExecuting || expiresIn <= 0) ? '0.5' : '1'
         }}
       >
         {isExecuting ? 'Executing...' : expiresIn <= 0 ? 'Quote Expired' : 'Execute Withdrawal'}

@@ -2,32 +2,30 @@ import React from 'react';
 
 export function WalletLoadingComponent() {
   return (
-    <div style={{ 
-      textAlign: 'center', 
-      padding: '2rem',
-      backgroundColor: '#000',
-      borderRadius: '0.5rem',
-      border: '1px solid #ffc107'
+    <div className="cb-card" style={{ 
+      textAlign: 'center',
+      maxWidth: '480px',
+      margin: '0 auto'
     }}>
-      <h2>💳 Loading Wallet</h2>
-      <p>Loading your wallet balances...</p>
-      <div style={{ margin: '1rem 0' }}>
-        <div className="spinner" style={{
-          display: 'inline-block',
-          width: '20px',
-          height: '20px',
-          border: '3px solid #f3f3f3',
-          borderTop: '3px solid #ffc107',
-          borderRadius: '50%',
-          animation: 'spin 2s linear infinite'
-        }}></div>
+      <div style={{
+        fontSize: '48px',
+        marginBottom: '16px',
+        lineHeight: '1'
+      }}>💳</div>
+      <h2 style={{
+        fontSize: '20px',
+        fontWeight: '600',
+        marginBottom: '8px',
+        color: 'var(--cb-text-primary)'
+      }}>Loading Wallet</h2>
+      <p style={{
+        fontSize: '16px',
+        color: 'var(--cb-text-secondary)',
+        marginBottom: '24px'
+      }}>Loading your wallet balances...</p>
+      <div style={{ marginBottom: '24px' }}>
+        <div className="spinner"></div>
       </div>
-      <style jsx>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
   );
 }

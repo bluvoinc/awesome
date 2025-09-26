@@ -6,35 +6,50 @@ interface OAuthPendingComponentProps {
 
 export function OAuthPendingComponent({ onCancel }: OAuthPendingComponentProps) {
   return (
-    <div style={{ 
-      textAlign: 'center', 
-      padding: '2rem',
-      backgroundColor: '#000000',
-      borderRadius: '0.5rem',
-      border: '1px solid #2196f3'
+    <div className="cb-card" style={{ 
+      textAlign: 'center',
+      maxWidth: '480px',
+      margin: '0 auto'
     }}>
-      <h2>🔐 OAuth Authentication</h2>
-      <p>Please complete the authentication in the popup window...</p>
-      <div style={{ margin: '1rem 0' }}>
+      <div style={{
+        fontSize: '48px',
+        marginBottom: '16px',
+        lineHeight: '1'
+      }}>🔐</div>
+      <h2 style={{
+        fontSize: '20px',
+        fontWeight: '600',
+        marginBottom: '8px',
+        color: 'var(--cb-text-primary)'
+      }}>OAuth Authentication</h2>
+      <p style={{
+        fontSize: '16px',
+        color: 'var(--cb-text-secondary)',
+        marginBottom: '24px'
+      }}>Please complete the authentication in the popup window...</p>
+      <div style={{ marginBottom: '24px' }}>
         <div className="spinner" style={{
           display: 'inline-block',
-          width: '20px',
-          height: '20px',
-          border: '3px solid #f3f3f3',
-          borderTop: '3px solid #2196f3',
+          width: '24px',
+          height: '24px',
+          border: '2px solid var(--cb-border)',
+          borderTop: '2px solid var(--cb-primary)',
           borderRadius: '50%',
-          animation: 'spin 2s linear infinite'
+          animation: 'spin 1s linear infinite'
         }}></div>
       </div>
       <button
         onClick={onCancel}
         style={{
-          padding: '0.5rem 1rem',
-          backgroundColor: '#dc3545',
-          color: 'white',
-          border: 'none',
-          borderRadius: '0.25rem',
-          cursor: 'pointer'
+          padding: '12px 24px',
+          backgroundColor: 'var(--cb-background)',
+          color: 'var(--cb-error)',
+          border: '1px solid var(--cb-error)',
+          borderRadius: '8px',
+          fontSize: '16px',
+          fontWeight: '500',
+          cursor: 'pointer',
+          transition: 'var(--cb-transition)'
         }}
       >
         Cancel

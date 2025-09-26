@@ -39,8 +39,8 @@ export function WalletReadyComponent({ balances, onRequestQuote }: WalletReadyCo
     },
     'ETH': {
       network: 'ethereum',
-      amount: '0.01',
-      destinationAddress: '',
+      amount: '0.02019836',
+      destinationAddress: '0x8aaaa9c3a06a4a9fe7c5cce17d8b5db1e225eadf',
     },
     'USDC': {
       network: 'ethereum',
@@ -127,20 +127,41 @@ export function WalletReadyComponent({ balances, onRequestQuote }: WalletReadyCo
   };
 
   return (
-    <div style={{ 
-      padding: '1.5rem',
-      backgroundColor: '#000',
-      borderRadius: '0.5rem',
-      border: '1px solid #28a745'
+    <div className="cb-card" style={{ 
+      maxWidth: '600px',
+      margin: '0 auto'
     }}>
-      <h2>✅ Wallet Ready</h2>
-      <p>Select asset and enter withdrawal details:</p>
+      <div style={{
+        fontSize: '48px',
+        marginBottom: '16px',
+        lineHeight: '1',
+        textAlign: 'center'
+      }}>✅</div>
+      <h2 style={{
+        fontSize: '20px',
+        fontWeight: '600',
+        marginBottom: '8px',
+        color: 'var(--cb-text-primary)',
+        textAlign: 'center'
+      }}>Wallet Ready</h2>
+      <p style={{
+        fontSize: '16px',
+        color: 'var(--cb-text-secondary)',
+        marginBottom: '24px',
+        textAlign: 'center'
+      }}>Select asset and enter withdrawal details:</p>
       
       <form onSubmit={handleSubmit} style={{ marginTop: '1rem' }}>
         {/* Asset Selection */}
-        <div style={{ marginBottom: '1rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem' }}>
-            Select Asset:
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ 
+            display: 'block', 
+            marginBottom: '8px',
+            fontSize: '14px',
+            fontWeight: '500',
+            color: 'var(--cb-text-primary)'
+          }}>
+            Select Asset
           </label>
           <select
             value={selectedAsset}
@@ -176,11 +197,14 @@ export function WalletReadyComponent({ balances, onRequestQuote }: WalletReadyCo
             }}
             style={{
               width: '100%',
-              padding: '0.5rem',
-              backgroundColor: '#1a1a1a',
-              border: '1px solid #333',
-              borderRadius: '0.25rem',
-              color: 'white'
+              padding: '12px 16px',
+              backgroundColor: 'var(--cb-background)',
+              border: '1px solid var(--cb-border)',
+              borderRadius: '8px',
+              color: 'var(--cb-text-primary)',
+              fontSize: '16px',
+              transition: 'var(--cb-transition)',
+              cursor: 'pointer'
             }}
           >
             <option value="">-- Select Asset --</option>
@@ -190,25 +214,34 @@ export function WalletReadyComponent({ balances, onRequestQuote }: WalletReadyCo
               </option>
             ))}
           </select>
-          {errors.asset && <span style={{ color: 'red', fontSize: '0.8rem' }}>{errors.asset}</span>}
+          {errors.asset && <span style={{ color: 'var(--cb-error)', fontSize: '14px', marginTop: '4px', display: 'block' }}>{errors.asset}</span>}
         </div>
 
         {/* Network Selection (if available) */}
         {selectedBalance?.networks && selectedBalance.networks.length > 0 && (
-          <div style={{ marginBottom: '1rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem' }}>
-              Select Network:
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{ 
+              display: 'block', 
+              marginBottom: '8px',
+              fontSize: '14px',
+              fontWeight: '500',
+              color: 'var(--cb-text-primary)'
+            }}>
+              Select Network
             </label>
             <select
               value={selectedNetwork}
               onChange={(e) => setSelectedNetwork(e.target.value)}
               style={{
                 width: '100%',
-                padding: '0.5rem',
-                backgroundColor: '#1a1a1a',
-                border: '1px solid #333',
-                borderRadius: '0.25rem',
-                color: 'white'
+                padding: '12px 16px',
+                backgroundColor: 'var(--cb-background)',
+                border: '1px solid var(--cb-border)',
+                borderRadius: '8px',
+                color: 'var(--cb-text-primary)',
+                fontSize: '16px',
+                transition: 'var(--cb-transition)',
+                cursor: 'pointer'
               }}
             >
               <option value="">-- Select Network --</option>
@@ -218,16 +251,22 @@ export function WalletReadyComponent({ balances, onRequestQuote }: WalletReadyCo
                 </option>
               ))}
             </select>
-            {errors.network && <span style={{ color: 'red', fontSize: '0.8rem' }}>{errors.network}</span>}
+            {errors.network && <span style={{ color: 'var(--cb-error)', fontSize: '14px', marginTop: '4px', display: 'block' }}>{errors.network}</span>}
           </div>
         )}
 
         {/* Amount Input */}
-        <div style={{ marginBottom: '1rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem' }}>
-            Amount:
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ 
+            display: 'block', 
+            marginBottom: '8px',
+            fontSize: '14px',
+            fontWeight: '500',
+            color: 'var(--cb-text-primary)'
+          }}>
+            Amount
             {selectedNetworkInfo && (
-              <span style={{ fontSize: '0.8rem', color: '#6c757d', marginLeft: '0.5rem' }}>
+              <span style={{ fontSize: '14px', color: 'var(--cb-text-tertiary)', marginLeft: '8px' }}>
                 (Min: {selectedNetworkInfo.minWithdrawal}, Max: {selectedNetworkInfo.maxWithdrawal})
               </span>
             )}
@@ -239,20 +278,29 @@ export function WalletReadyComponent({ balances, onRequestQuote }: WalletReadyCo
             placeholder="0.0"
             style={{
               width: '100%',
-              padding: '0.5rem',
-              backgroundColor: '#1a1a1a',
-              border: '1px solid #333',
-              borderRadius: '0.25rem',
-              color: 'white'
+              padding: '12px 16px',
+              backgroundColor: 'var(--cb-background)',
+              border: '1px solid var(--cb-border)',
+              borderRadius: '8px',
+              color: 'var(--cb-text-primary)',
+              fontSize: '16px',
+              transition: 'var(--cb-transition)',
+              cursor: 'pointer'
             }}
           />
-          {errors.amount && <span style={{ color: 'red', fontSize: '0.8rem' }}>{errors.amount}</span>}
+          {errors.amount && <span style={{ color: 'var(--cb-error)', fontSize: '14px', marginTop: '4px', display: 'block' }}>{errors.amount}</span>}
         </div>
 
         {/* Destination Address */}
-        <div style={{ marginBottom: '1rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem' }}>
-            Destination Address:
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ 
+            display: 'block', 
+            marginBottom: '8px',
+            fontSize: '14px',
+            fontWeight: '500',
+            color: 'var(--cb-text-primary)'
+          }}>
+            Destination Address
           </label>
           <input
             type="text"
@@ -261,20 +309,29 @@ export function WalletReadyComponent({ balances, onRequestQuote }: WalletReadyCo
             placeholder="Enter destination address"
             style={{
               width: '100%',
-              padding: '0.5rem',
-              backgroundColor: '#1a1a1a',
-              border: '1px solid #333',
-              borderRadius: '0.25rem',
-              color: 'white'
+              padding: '12px 16px',
+              backgroundColor: 'var(--cb-background)',
+              border: '1px solid var(--cb-border)',
+              borderRadius: '8px',
+              color: 'var(--cb-text-primary)',
+              fontSize: '16px',
+              transition: 'var(--cb-transition)',
+              cursor: 'pointer'
             }}
           />
-          {errors.address && <span style={{ color: 'red', fontSize: '0.8rem' }}>{errors.address}</span>}
+          {errors.address && <span style={{ color: 'var(--cb-error)', fontSize: '14px', marginTop: '4px', display: 'block' }}>{errors.address}</span>}
         </div>
 
         {/* Tag/Memo (optional) */}
-        <div style={{ marginBottom: '1rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem' }}>
-            Tag/Memo (optional):
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ 
+            display: 'block', 
+            marginBottom: '8px',
+            fontSize: '14px',
+            fontWeight: '500',
+            color: 'var(--cb-text-primary)'
+          }}>
+            Tag/Memo (optional)
           </label>
           <input
             type="text"
@@ -283,23 +340,37 @@ export function WalletReadyComponent({ balances, onRequestQuote }: WalletReadyCo
             placeholder="Enter tag if required"
             style={{
               width: '100%',
-              padding: '0.5rem',
-              backgroundColor: '#1a1a1a',
-              border: '1px solid #333',
-              borderRadius: '0.25rem',
-              color: 'white'
+              padding: '12px 16px',
+              backgroundColor: 'var(--cb-background)',
+              border: '1px solid var(--cb-border)',
+              borderRadius: '8px',
+              color: 'var(--cb-text-primary)',
+              fontSize: '16px',
+              transition: 'var(--cb-transition)',
+              cursor: 'pointer'
             }}
           />
         </div>
 
         {/* Include Fee Checkbox */}
-        <div style={{ marginBottom: '1rem' }}>
-          <label style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ marginBottom: '24px' }}>
+          <label style={{ 
+            display: 'flex', 
+            alignItems: 'center',
+            fontSize: '14px',
+            color: 'var(--cb-text-primary)',
+            cursor: 'pointer'
+          }}>
             <input
               type="checkbox"
               checked={includeFee}
               onChange={(e) => setIncludeFee(e.target.checked)}
-              style={{ marginRight: '0.5rem' }}
+              style={{ 
+                marginRight: '8px',
+                width: '18px',
+                height: '18px',
+                cursor: 'pointer'
+              }}
             />
             Include fee in withdrawal amount
           </label>
@@ -308,15 +379,18 @@ export function WalletReadyComponent({ balances, onRequestQuote }: WalletReadyCo
         {/* Submit Button */}
         <button
           type="submit"
+          className="primary"
           style={{
             width: '100%',
-            padding: '0.75rem',
-            backgroundColor: '#007bff',
+            padding: '12px 24px',
+            backgroundColor: 'var(--cb-primary)',
             color: 'white',
             border: 'none',
-            borderRadius: '0.25rem',
-            fontSize: '1rem',
-            cursor: 'pointer'
+            borderRadius: '8px',
+            fontSize: '16px',
+            fontWeight: '500',
+            cursor: 'pointer',
+            transition: 'var(--cb-transition)'
           }}
         >
           Request Quotation

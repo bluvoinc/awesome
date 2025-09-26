@@ -42,8 +42,9 @@ export default function Home() {
         // helpatbluvo's kraken
         // "a107c79d-a302-49c2-ae90-2a47aaa90586"
         // flo's coinbase
+        "25c8d725-7655-4770-b364-fb93c1e73ca3"
         // "fdab8410-0f9b-41c5-8a4a-cc44401d9d78"
-        "345b0e00-e979-4873-be4d-653b802253b4"
+        // "345b0e00-e979-4873-be4d-653b802253b4"
         //"624ed616-ba33-44e0-a9a1-896bd9804f75";
         // localStorage.getItem('connectedWalletId') || 'unknown-wallet-id';
 
@@ -125,48 +126,48 @@ export default function Home() {
         <>
             {/* OAuth Window Closed by User Message */}
             {showOAuthClosedMessage && (
-                <div style={{
+                <div className="cb-card" style={{
                     textAlign: 'center',
-                    padding: '3rem',
-                    backgroundColor: '#000',
-                    borderRadius: '1rem',
-                    border: '2px solid #dc3545',
-                    maxWidth: '500px',
-                    margin: '2rem auto'
+                    maxWidth: '480px',
+                    margin: '0 auto',
+                    border: '1px solid var(--cb-error)',
+                    backgroundColor: 'var(--cb-background)'
                 }}>
                     <div style={{
-                        fontSize: '3rem',
-                        marginBottom: '1rem'
+                        fontSize: '48px',
+                        marginBottom: '16px',
+                        lineHeight: '1'
                     }}>
                         ❌
                     </div>
                     <h2 style={{
-                        color: '#dc3545',
-                        marginBottom: '1rem',
-                        fontSize: '1.5rem'
+                        fontSize: '20px',
+                        fontWeight: '600',
+                        marginBottom: '8px',
+                        color: 'var(--cb-text-primary)'
                     }}>
                         OAuth Window Closed
                     </h2>
                     <p style={{
-                        fontSize: '1.1rem',
-                        color: '#ccc',
-                        marginBottom: '1.5rem'
+                        fontSize: '16px',
+                        color: 'var(--cb-text-secondary)',
+                        marginBottom: '16px'
                     }}>
                         You closed the authentication window before completing the process.
                     </p>
                     <p style={{
-                        fontSize: '0.9rem',
-                        color: '#888'
+                        fontSize: '14px',
+                        color: 'var(--cb-text-tertiary)'
                     }}>
                         Returning to exchange selection in 3 seconds...
                     </p>
                     <div style={{
-                        marginTop: '1rem',
+                        marginTop: '16px',
                         display: 'inline-block',
                         width: '20px',
                         height: '20px',
-                        border: '3px solid #444',
-                        borderTop: '3px solid #dc3545',
+                        border: '2px solid var(--cb-border)',
+                        borderTop: '2px solid var(--cb-error)',
                         borderRadius: '50%',
                         animation: 'spin 1s linear infinite'
                     }}></div>
@@ -174,30 +175,33 @@ export default function Home() {
             )}
 
             {!flowState.state && !showOAuthClosedMessage && (
-                <div style={{ textAlign: 'center', padding: '2rem' }}>
-                    <h2>Choose an Option</h2>
+                <div className="cb-card" style={{ textAlign: 'center' }}>
+                    <h2 style={{ fontSize: '24px', fontWeight: '600', marginBottom: '8px' }}>Withdrawal Widget</h2>
+                    <p style={{ color: 'var(--cb-text-secondary)', marginBottom: '32px' }}>Connect your exchange account to withdraw funds</p>
                     
-                    <div style={{ marginBottom: '2rem' }}>
-                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1rem', fontWeight: 'bold' }}>
-                            Select Exchange:
+                    <div style={{ marginBottom: '32px' }}>
+                        <label style={{ display: 'block', marginBottom: '12px', fontSize: '14px', fontWeight: '500', color: 'var(--cb-text-secondary)', textAlign: 'left' }}>
+                            Exchange
                         </label>
                         {flow.isExchangesLoading ? (
-                            <div style={{ color: '#ccc' }}>Loading exchanges...</div>
+                            <div style={{ color: 'var(--cb-text-tertiary)', fontSize: '14px' }}>Loading exchanges...</div>
                         ) : flow.exchangesError ? (
-                            <div style={{ color: '#dc3545' }}>Error loading exchanges: {flow.exchangesError.message}</div>
+                            <div style={{ color: 'var(--cb-error)', fontSize: '14px' }}>Error loading exchanges: {flow.exchangesError.message}</div>
                         ) : (
                             <select
                                 value={selectedExchange}
                                 onChange={(e) => setSelectedExchange(e.target.value)}
                                 disabled={flow.exchanges.length === 0}
                                 style={{
-                                    padding: '0.5rem 1rem',
-                                    fontSize: '1rem',
-                                    borderRadius: '0.25rem',
-                                    border: '1px solid #444',
-                                    backgroundColor: '#2a2a2a',
-                                    color: 'white',
-                                    cursor: 'pointer'
+                                    width: '100%',
+                                    padding: '12px 16px',
+                                    fontSize: '16px',
+                                    borderRadius: '8px',
+                                    border: '1px solid var(--cb-border)',
+                                    backgroundColor: 'var(--cb-background)',
+                                    color: 'var(--cb-text-primary)',
+                                    cursor: 'pointer',
+                                    transition: 'var(--cb-transition)'
                                 }}
                             >
                                 {flow.exchanges.length === 0 ? (
@@ -213,18 +217,21 @@ export default function Home() {
                         )}
                     </div>
                     
-                    <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '2rem' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                         <button
                             onClick={handleStartFlow}
                             disabled={!selectedExchange || flow.isExchangesLoading}
                             style={{
-                                padding: '1rem 2rem',
-                                backgroundColor: (!selectedExchange || flow.isExchangesLoading) ? '#555' : '#007bff',
+                                width: '100%',
+                                padding: '16px 24px',
+                                backgroundColor: (!selectedExchange || flow.isExchangesLoading) ? 'var(--cb-text-tertiary)' : 'var(--cb-primary)',
                                 color: 'white',
                                 border: 'none',
-                                borderRadius: '0.5rem',
-                                fontSize: '1rem',
-                                cursor: (!selectedExchange || flow.isExchangesLoading) ? 'not-allowed' : 'pointer'
+                                borderRadius: '8px',
+                                fontSize: '16px',
+                                fontWeight: '500',
+                                cursor: (!selectedExchange || flow.isExchangesLoading) ? 'not-allowed' : 'pointer',
+                                transition: 'var(--cb-transition)'
                             }}
                         >
                             Start New Withdrawal
@@ -233,19 +240,22 @@ export default function Home() {
                             onClick={handleResumeFlow}
                             disabled={!selectedExchange || flow.isExchangesLoading}
                             style={{
-                                padding: '1rem 2rem',
-                                backgroundColor: (!selectedExchange || flow.isExchangesLoading) ? '#555' : '#28a745',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '0.5rem',
-                                fontSize: '1rem',
-                                cursor: (!selectedExchange || flow.isExchangesLoading) ? 'not-allowed' : 'pointer'
+                                width: '100%',
+                                padding: '16px 24px',
+                                backgroundColor: 'var(--cb-background)',
+                                color: (!selectedExchange || flow.isExchangesLoading) ? 'var(--cb-text-tertiary)' : 'var(--cb-text-primary)',
+                                border: '1px solid var(--cb-border)',
+                                borderRadius: '8px',
+                                fontSize: '16px',
+                                fontWeight: '500',
+                                cursor: (!selectedExchange || flow.isExchangesLoading) ? 'not-allowed' : 'pointer',
+                                transition: 'var(--cb-transition)'
                             }}
                         >
                             Resume with Existing Wallet
                         </button>
                     </div>
-                    <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#6c757d' }}>
+                    <p style={{ marginTop: '16px', fontSize: '12px', color: 'var(--cb-text-tertiary)' }}>
                         Resume uses wallet ID: {PREVIOUSLY_CONNECTED_WALLET_ID.slice(0, 8)}...
                     </p>
                 </div>
@@ -319,16 +329,29 @@ export default function Home() {
             )}
             
             {flowState.isWithdrawing && (
-                <div style={{textAlign: 'center', padding: '2rem'}}>
-                    <h2>🔄 Processing Withdrawal</h2>
-                    <p>Current state: {flowState.state?.type}</p>
-                    <div style={{margin: '1rem 0'}}>
+                <div className="cb-card" style={{textAlign: 'center'}}>
+                    <div style={{
+                        fontSize: '48px',
+                        marginBottom: '16px',
+                        lineHeight: '1'
+                    }}>🔄</div>
+                    <h2 style={{
+                        fontSize: '20px',
+                        fontWeight: '600',
+                        marginBottom: '8px',
+                        color: 'var(--cb-text-primary)'
+                    }}>Processing Withdrawal</h2>
+                    <p style={{
+                        fontSize: '14px',
+                        color: 'var(--cb-text-secondary)'
+                    }}>Current state: {flowState.state?.type}</p>
+                    <div style={{margin: '16px 0'}}>
                         <div className="spinner" style={{
                             display: 'inline-block',
                             width: '20px',
                             height: '20px',
-                            border: '3px solid #f3f3f3',
-                            borderTop: '3px solid #007bff',
+                            border: '2px solid var(--cb-border)',
+                            borderTop: '2px solid var(--cb-primary)',
                             borderRadius: '50%',
                             animation: 'spin 2s linear infinite'
                         }}></div>
@@ -341,10 +364,32 @@ export default function Home() {
              !flowState.requires2FA && !flowState.requiresSMS && !flowState.requiresKYC && 
              !flowState.isWithdrawalComplete && !flowState.canRetry && !flowState.hasFatalError && 
              !flowState.hasError && !flowState.isWithdrawing && !flowState.isOAuthWindowBeenClosedByTheUser && (
-                <div style={{textAlign: 'center', padding: '2rem'}}>
-                    <h2>Unknown State</h2>
-                    <p>Current state: {flowState.state?.type}</p>
-                    <button onClick={handleStartNewWithdrawal}>
+                <div className="cb-card" style={{textAlign: 'center'}}>
+                    <h2 style={{
+                        fontSize: '20px',
+                        fontWeight: '600',
+                        marginBottom: '8px',
+                        color: 'var(--cb-text-primary)'
+                    }}>Unknown State</h2>
+                    <p style={{
+                        fontSize: '14px',
+                        color: 'var(--cb-text-secondary)',
+                        marginBottom: '24px'
+                    }}>Current state: {flowState.state?.type}</p>
+                    <button 
+                        onClick={handleStartNewWithdrawal}
+                        style={{
+                            padding: '12px 24px',
+                            backgroundColor: 'var(--cb-primary)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '8px',
+                            fontSize: '16px',
+                            fontWeight: '500',
+                            cursor: 'pointer',
+                            transition: 'var(--cb-transition)'
+                        }}
+                    >
                         Restart
                     </button>
                 </div>
@@ -355,7 +400,13 @@ export default function Home() {
     return (
         <div className={styles.page}>
             <main className={styles.main}>
-                <h1>Bluvo Withdrawal Flow</h1>
+                <h1 style={{
+                    fontSize: '32px',
+                    fontWeight: '600',
+                    textAlign: 'center',
+                    marginBottom: '32px',
+                    color: 'var(--cb-text-primary)'
+                }}>Bluvo Withdrawal Flow</h1>
 
                 {/* Render real flow by default, or simulator when enabled */}
                 {useSimulator ? (
@@ -375,9 +426,9 @@ export default function Home() {
                         right: '20px',
                         zIndex: 1000,
                         padding: '10px 15px',
-                        backgroundColor: useSimulator ? '#00ff00' : '#1e1e1e',
-                        color: useSimulator ? '#000' : '#00ff00',
-                        border: '2px solid #00ff00',
+                        backgroundColor: useSimulator ? 'var(--cb-primary)' : 'var(--cb-background)',
+                        color: useSimulator ? 'white' : 'var(--cb-primary)',
+                        border: '1px solid var(--cb-primary)',
                         borderRadius: '8px',
                         fontFamily: 'monospace',
                         fontSize: '14px',
@@ -393,7 +444,7 @@ export default function Home() {
                 <details style={{marginTop: '2rem', fontSize: '0.8rem'}}>
                     <summary>Debug Info</summary>
                     <pre style={{
-                        backgroundColor: '#000000',
+                        backgroundColor: 'var(--cb-background-secondary)',
                         padding: '1rem',
                         borderRadius: '0.25rem',
                         overflow: 'auto'

@@ -40,10 +40,9 @@ The following is provided without any promises or guarantees.
 
 ### Widget Examples (Client-side with OAuth2)
 
-| Framework | Description                            | Link                            |
-|-----------|----------------------------------------|---------------------------------|
-| Next.js   | Complete OAuth2 wallet connection flow | [widget-next](widget-next/)     |
-| Svelte    | Complete OAuth2 wallet connection flow | [widget-svelte](widget-svelte/) |
+| Framework | Description                                                            | Link                                               |
+|-----------|------------------------------------------------------------------------|----------------------------------------------------|
+| Next.js   | Whitelabel React widget with state machine, fully customizable UI using Next.js with server actions and @bluvo/sdk-ts for backend operations | [withdraw-whitelabel-next](withdraw-whitelabel-next/) |
 
 ## Recent Updates
 

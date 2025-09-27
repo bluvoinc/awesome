@@ -38,15 +38,7 @@ export default function Home() {
     const [useSimulator, setUseSimulator] = React.useState(false);
 
     // FIXME: ⨯ ReferenceError: localStorage is not defined
-    const PREVIOUSLY_CONNECTED_WALLET_ID =
-        // helpatbluvo's kraken
-        // "a107c79d-a302-49c2-ae90-2a47aaa90586"
-        // flo's coinbase
-        "25c8d725-7655-4770-b364-fb93c1e73ca3"
-        // "fdab8410-0f9b-41c5-8a4a-cc44401d9d78"
-        // "345b0e00-e979-4873-be4d-653b802253b4"
-        //"624ed616-ba33-44e0-a9a1-896bd9804f75";
-        // localStorage.getItem('connectedWalletId') || 'unknown-wallet-id';
+    const PREVIOUSLY_CONNECTED_WALLET_ID = "174edb8f-2f6d-4bbc-9cd5-38a453723ed3";
 
     // Initialize the flow with server action callbacks
     const flow = useBluvoFlow({

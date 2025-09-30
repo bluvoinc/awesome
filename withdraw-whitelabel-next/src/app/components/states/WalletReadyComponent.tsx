@@ -6,9 +6,9 @@ interface Network {
   name: string;
   displayName: string;
   minWithdrawal: string;
-  maxWithdrawal: string;
+  maxWithdrawal?: string;
   assetName: string;
-  addressRegex?: string;
+  addressRegex?: string | null;
 }
 
 interface Balance {
@@ -43,9 +43,9 @@ export function WalletReadyComponent({ balances, onRequestQuote }: WalletReadyCo
       destinationAddress: '0x8aaaa9c3a06a4a9fe7c5cce17d8b5db1e225eadf',
     },
     'USDC': {
-      network: 'ethereum',
+      network: 'base',
       amount: '10',
-      destinationAddress: '',
+      destinationAddress: '0x2694F5A5b35b8911Ba2146ea41C7E191c80d4853', // my USDC base address
     },
     'XRP': {
       amount: '25',
@@ -87,7 +87,7 @@ export function WalletReadyComponent({ balances, onRequestQuote }: WalletReadyCo
         newErrors.amount = 'Insufficient balance';
       } else if (selectedNetworkInfo) {
         const minWithdrawal = parseFloat(selectedNetworkInfo.minWithdrawal);
-        const maxWithdrawal = parseFloat(selectedNetworkInfo.maxWithdrawal);
+        const maxWithdrawal = parseFloat(selectedNetworkInfo.maxWithdrawal || 'Infinity');
         
         if (amountNum < minWithdrawal) {
           newErrors.amount = `Minimum withdrawal: ${minWithdrawal} ${selectedAsset}`;

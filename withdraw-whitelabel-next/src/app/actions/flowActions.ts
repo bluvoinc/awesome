@@ -62,6 +62,21 @@ function toPlain<T extends object>(o: T): T {
     // return Array.isArray(o) ? (o.map(toPlain) as any) : {...o};
 }
 
+export async function getWalletById(walletId: string): Promise<{ id: string; exchange: string; } | null> {
+    try {
+        const wallet = await loadBluvoClient()
+            .wallet
+            .get(walletId);
+
+        return {
+            id: walletId,
+            exchange: wallet.exchange,
+        }
+    } catch (e) {
+        console.error("getWalletById error", e);
+        return null;
+    }
+}
 
 async function getWithdrawableBalanceById(walletId: string) {
     return toPlain(await loadBluvoClient()

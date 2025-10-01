@@ -5,7 +5,8 @@ import {
     fetchWithdrawableBalances,
     requestQuotation,
     executeWithdrawal,
-    listExchanges
+    listExchanges,
+    getWalletById
 } from '../actions/flowActions';
 
 // State-specific components
@@ -27,6 +28,10 @@ import { useBluvoFlow } from "@bluvo/react";
 const generateId = () => crypto.randomUUID();
 
 const handleStartNewWithdrawal = () => {
+    // Clear the stored wallet ID to force a new OAuth flow
+    localStorage.removeItem('userWalletId');
+    localStorage.removeItem('connectedWalletId');
+    localStorage.removeItem('connectedExchange');
     // Reset by reloading the page (in production, you might want a cleaner reset)
     window.location.reload();
 };
@@ -37,9 +42,6 @@ export default function Home() {
         React.useState(false);
     const [useSimulator, setUseSimulator] = React.useState(false);
 
-    // FIXME: ⨯ ReferenceError: localStorage is not defined
-    const PREVIOUSLY_CONNECTED_WALLET_ID = "174edb8f-2f6d-4bbc-9cd5-38a453723ed3";
-
     // Initialize the flow with server action callbacks
     const flow = useBluvoFlow({
         orgId: "imSgZyiY2EsbKboJzbbhMDHcknWB3pfY",
@@ -49,6 +51,7 @@ export default function Home() {
         fetchWithdrawableBalanceFn: fetchWithdrawableBalances,
         requestQuotationFn: requestQuotation,
         executeWithdrawalFn: executeWithdrawal,
+        getWalletByIdFn: getWalletById,
 
         onWalletConnectedFn: (walletId, exchange) => {
             // call server action store this walletId for the currently-logged in user
@@ -77,9 +80,17 @@ export default function Home() {
     }, [flow.exchanges.length, selectedExchange]);
 
     const handleStartFlow = async () => {
+        // Generate a persistent wallet ID for the user
+        // In a real app, this would be fetched from the server based on the logged-in user
+        let walletId = localStorage.getItem('userWalletId');
+        if (!walletId) {
+            walletId = generateId();
+            localStorage.setItem('userWalletId', walletId);
+        }
+
         await flow.startWithdrawalFlow({
             exchange: selectedExchange,
-            walletId: generateId(),
+            walletId: walletId,
             // optional:
             // popupOptions: {
             //     width: 500,
@@ -87,14 +98,6 @@ export default function Home() {
             //     left: window.screenX + (window.outerWidth - 500) / 2,
             //     top: window.screenY + (window.outerHeight - 700) / 2
             // }
-        });
-    };
-
-    // TODO: add a state "wallet:resuming" to show a loading spinner while resuming invoked by resumeWithdrawalFlow
-    const handleResumeFlow = async () => {
-        await flow.resumeWithdrawalFlow({
-            exchange: selectedExchange,
-            walletId: PREVIOUSLY_CONNECTED_WALLET_ID
         });
     };
 
@@ -209,47 +212,24 @@ export default function Home() {
                         )}
                     </div>
                     
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                        <button
-                            onClick={handleStartFlow}
-                            disabled={!selectedExchange || flow.isExchangesLoading}
-                            style={{
-                                width: '100%',
-                                padding: '16px 24px',
-                                backgroundColor: (!selectedExchange || flow.isExchangesLoading) ? 'var(--cb-text-tertiary)' : 'var(--cb-primary)',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '8px',
-                                fontSize: '16px',
-                                fontWeight: '500',
-                                cursor: (!selectedExchange || flow.isExchangesLoading) ? 'not-allowed' : 'pointer',
-                                transition: 'var(--cb-transition)'
-                            }}
-                        >
-                            Start New Withdrawal
-                        </button>
-                        <button
-                            onClick={handleResumeFlow}
-                            disabled={!selectedExchange || flow.isExchangesLoading}
-                            style={{
-                                width: '100%',
-                                padding: '16px 24px',
-                                backgroundColor: 'var(--cb-background)',
-                                color: (!selectedExchange || flow.isExchangesLoading) ? 'var(--cb-text-tertiary)' : 'var(--cb-text-primary)',
-                                border: '1px solid var(--cb-border)',
-                                borderRadius: '8px',
-                                fontSize: '16px',
-                                fontWeight: '500',
-                                cursor: (!selectedExchange || flow.isExchangesLoading) ? 'not-allowed' : 'pointer',
-                                transition: 'var(--cb-transition)'
-                            }}
-                        >
-                            Resume with Existing Wallet
-                        </button>
-                    </div>
-                    <p style={{ marginTop: '16px', fontSize: '12px', color: 'var(--cb-text-tertiary)' }}>
-                        Resume uses wallet ID: {PREVIOUSLY_CONNECTED_WALLET_ID.slice(0, 8)}...
-                    </p>
+                    <button
+                        onClick={handleStartFlow}
+                        disabled={!selectedExchange || flow.isExchangesLoading}
+                        style={{
+                            width: '100%',
+                            padding: '16px 24px',
+                            backgroundColor: (!selectedExchange || flow.isExchangesLoading) ? 'var(--cb-text-tertiary)' : 'var(--cb-primary)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '8px',
+                            fontSize: '16px',
+                            fontWeight: '500',
+                            cursor: (!selectedExchange || flow.isExchangesLoading) ? 'not-allowed' : 'pointer',
+                            transition: 'var(--cb-transition)'
+                        }}
+                    >
+                        Start Withdrawal
+                    </button>
                 </div>
             )}
             

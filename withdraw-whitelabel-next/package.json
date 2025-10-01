@@ -9,8 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@bluvo/sdk-ts": "1.1.64",
-    "@bluvo/react": "1.1.64",
+    "@bluvo/sdk-ts": "1.1.65",
+    "@bluvo/react": "1.1.65",
     "@tanstack/react-query": "^5.85.3",
     "next": "15.4.6",
     "react": "19.1.0",

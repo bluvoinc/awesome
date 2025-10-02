@@ -41,6 +41,7 @@ export default function Home() {
     const [showOAuthClosedMessage, setShowOAuthClosedMessage] =
         React.useState(false);
     const [useSimulator, setUseSimulator] = React.useState(false);
+    const [isButtonLoading, setIsButtonLoading] = React.useState(false);
 
     // Initialize the flow with server action callbacks
     const flow = useBluvoFlow({
@@ -80,31 +81,48 @@ export default function Home() {
     }, [flow.exchanges.length, selectedExchange]);
 
     const handleStartFlow = async () => {
-        // Generate a persistent wallet ID for the user
-        // In a real app, this would be fetched from the server based on the logged-in user
-        let walletId = localStorage.getItem('userWalletId');
-        if (!walletId) {
-            walletId = generateId();
-            localStorage.setItem('userWalletId', walletId);
-        }
+        setIsButtonLoading(true);
+        try {
+            // Generate a persistent wallet ID for the user
+            // In a real app, this would be fetched from the server based on the logged-in user
+            let walletId =
+                generateId();
+                 //  "624ed616-ba33-44e0-a9a1-896bd9804f75"
+                // localStorage.getItem('userWalletId');
+            if (!walletId) {
+                walletId = generateId();
+                localStorage.setItem('userWalletId', walletId);
+            }
 
-        await flow.startWithdrawalFlow({
-            exchange: selectedExchange,
-            walletId: walletId,
-            // optional:
-            // popupOptions: {
-            //     width: 500,
-            //     height: 650,
-            //     left: window.screenX + (window.outerWidth - 500) / 2,
-            //     top: window.screenY + (window.outerHeight - 700) / 2
-            // }
-        });
+            await flow.startWithdrawalFlow({
+                exchange: selectedExchange,
+                walletId: walletId,
+                // optional:
+                // popupOptions: {
+                //     width: 500,
+                //     height: 650,
+                //     left: window.screenX + (window.outerWidth - 500) / 2,
+                //     top: window.screenY + (window.outerHeight - 700) / 2
+                // }
+            });
+        } catch (error) {
+            console.error('Error starting withdrawal flow:', error);
+            setIsButtonLoading(false);
+        }
     };
+
+    // Reset button loading state when flow state changes
+    React.useEffect(() => {
+        if (flow.state && isButtonLoading) {
+            setIsButtonLoading(false);
+        }
+    }, [flow.state, isButtonLoading]);
 
     // Handle OAuth window closed by user
     React.useEffect(() => {
         if (flow.isOAuthWindowBeenClosedByTheUser) {
             setShowOAuthClosedMessage(true);
+            setIsButtonLoading(false); // Reset button loading state
             
             // Set timeout to return to default UI after 3 seconds
             const timer = setTimeout(() => {
@@ -214,20 +232,35 @@ export default function Home() {
                     
                     <button
                         onClick={handleStartFlow}
-                        disabled={!selectedExchange || flow.isExchangesLoading}
+                        disabled={!selectedExchange || flow.isExchangesLoading || isButtonLoading}
                         style={{
                             width: '100%',
                             padding: '16px 24px',
-                            backgroundColor: (!selectedExchange || flow.isExchangesLoading) ? 'var(--cb-text-tertiary)' : 'var(--cb-primary)',
+                            backgroundColor: (!selectedExchange || flow.isExchangesLoading || isButtonLoading) ? 'var(--cb-text-tertiary)' : 'var(--cb-primary)',
                             color: 'white',
                             border: 'none',
                             borderRadius: '8px',
                             fontSize: '16px',
                             fontWeight: '500',
-                            cursor: (!selectedExchange || flow.isExchangesLoading) ? 'not-allowed' : 'pointer',
-                            transition: 'var(--cb-transition)'
+                            cursor: (!selectedExchange || flow.isExchangesLoading || isButtonLoading) ? 'not-allowed' : 'pointer',
+                            transition: 'var(--cb-transition)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '8px'
                         }}
                     >
+                        {isButtonLoading && (
+                            <div style={{
+                                display: 'inline-block',
+                                width: '16px',
+                                height: '16px',
+                                border: '2px solid rgba(255, 255, 255, 0.3)',
+                                borderTop: '2px solid white',
+                                borderRadius: '50%',
+                                animation: 'spin 1s linear infinite'
+                            }}></div>
+                        )}
                         Start Withdrawal
                     </button>
                 </div>

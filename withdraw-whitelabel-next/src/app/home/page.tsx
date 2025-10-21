@@ -23,7 +23,7 @@ import {ErrorComponent} from '../components/states/ErrorComponent';
 import {StateSimulator} from '../components/StateSimulator';
 
 import styles from '../page.module.css';
-import { useBluvoFlow } from "@bluvo/react";
+import { useBluvoFlow } from "@bluvo/react"
 
 const generateId = () => crypto.randomUUID();
 
@@ -53,15 +53,6 @@ export default function Home() {
         requestQuotationFn: requestQuotation,
         executeWithdrawalFn: executeWithdrawal,
         getWalletByIdFn: getWalletById,
-
-        onWalletConnectedFn: (walletId, exchange) => {
-            // call server action store this walletId for the currently-logged in user
-            console.log("Should store walletId for the user:", walletId, exchange);
-
-            // store the walletId in localStorage for demo purposes
-            localStorage.setItem('connectedWalletId', walletId);
-            localStorage.setItem('connectedExchange', exchange);
-        }
     });
 
     // Load exchanges on component mount
@@ -86,7 +77,8 @@ export default function Home() {
             // Generate a persistent wallet ID for the user
             // In a real app, this would be fetched from the server based on the logged-in user
             let walletId =
-                generateId();
+                "b6b39891-1d40-401e-b2ae-0ca35bf3a0b6";
+                // generateId();
                  //  "624ed616-ba33-44e0-a9a1-896bd9804f75"
                 // localStorage.getItem('userWalletId');
             if (!walletId) {
@@ -284,14 +276,16 @@ export default function Home() {
                     isExecuting={flowState.isWithdrawing}
                 />
             )}
-            
+
+            {/* Quote expiration is handled automatically with auto-refresh */}
+            {/* Only shows if autoRefreshQuotation is explicitly disabled */}
             {flowState.isQuoteExpired && (
                 <ErrorComponent
-                    error={new Error('Quote has expired. Please start a new withdrawal.')}
+                    error={new Error('Quote has expired. Please request a new quote.')}
                     onCancel={handleStartNewWithdrawal}
                 />
             )}
-            
+
             {flowState.requires2FA && (
                 <RequireTwoFactorAuthenticationCode
                     onSubmit2FA={flowState.submit2FA}
@@ -364,10 +358,11 @@ export default function Home() {
                 </div>
             )}
             
-            {flowState.state && !flowState.isOAuthPending && !flowState.isWalletLoading && !flowState.isWalletReady && 
-             !flowState.isQuoteLoading && !flowState.isQuoteReady && !flowState.isQuoteExpired && 
-             !flowState.requires2FA && !flowState.requiresSMS && !flowState.requiresKYC && 
-             !flowState.isWithdrawalComplete && !flowState.canRetry && !flowState.hasFatalError && 
+            {/* Note: isQuoteExpired removed from condition since auto-refresh is now default */}
+            {flowState.state && !flowState.isOAuthPending && !flowState.isWalletLoading && !flowState.isWalletReady &&
+             !flowState.isQuoteLoading && !flowState.isQuoteReady &&
+             !flowState.requires2FA && !flowState.requiresSMS && !flowState.requiresKYC &&
+             !flowState.isWithdrawalComplete && !flowState.canRetry && !flowState.hasFatalError &&
              !flowState.hasError && !flowState.isWithdrawing && !flowState.isOAuthWindowBeenClosedByTheUser && (
                 <div className="cb-card" style={{textAlign: 'center'}}>
                     <h2 style={{

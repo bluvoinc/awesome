@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { FlowContext } from '@bluvo/react';
+import {FlowContext} from "@bluvo/sdk-ts";
 
 interface StateSimulatorProps {
   children: (flowState: SimulatedFlowState) => React.ReactNode;

@@ -1,26 +1,45 @@
 'use server'
 
-import {createClient} from "@bluvo/sdk-ts";
+import {
+    createClient,
+    createDevClient,
+    createSandboxClient,
+    ListCentralizedExchangesResponseStatusEnum
+} from "@bluvo/sdk-ts";
+
+function loadBluvoClient() {
+    if (!process.env.BLUVO_ORG_ID || !process.env.BLUVO_PROJECT_ID || !process.env.BLUVO_API_KEY) {
+        throw new Error('Missing Bluvo environment variables: BLUVO_ORG_ID, BLUVO_PROJECT_ID, BLUVO_API_KEY');
+    }
+
+    return createClient({
+        orgId: process.env.BLUVO_ORG_ID || '',
+        projectId: process.env.BLUVO_PROJECT_ID || '',
+        apiKey: process.env.BLUVO_API_KEY || '',
+    });
+}
+
 
 export async function fetchWithdrawableBalances(walletId: string) {
     return await getWithdrawableBalanceById(walletId);
 }
 
 export async function listExchanges(status?: 'live' | 'offline' | 'maintenance' | 'coming_soon') {
-    return toPlain(await loadBluvoClient().oauth2.listExchanges(status));
-}
-
-function loadBluvoClient() {
-
-    if (!process.env.BLUVO_ORG_ID || !process.env.BLUVO_PROJECT_ID || !process.env.BLUVO_API_KEY) {
-        throw new Error('Missing Bluvo environment variables: BLUVO_ORG_ID, BLUVO_PROJECT_ID, BLUVO_API_KEY');
-    }
-
-    return createClient({
-        orgId: process.env.BLUVO_ORG_ID,
-        projectId: process.env.BLUVO_PROJECT_ID,
-        apiKey: process.env.BLUVO_API_KEY,
-    });
+    return [
+        {
+            id: 'coinbase',
+            name: 'Coinbase',
+            logoUrl: 'https://www.bluvo.com/logos/coinbase.png',
+            status: ListCentralizedExchangesResponseStatusEnum.Live
+        },
+        {
+            id: 'kraken',
+            name: 'Kraken',
+            logoUrl: 'https://www.bluvo.com/logos/kraken.png',
+            status: ListCentralizedExchangesResponseStatusEnum.Live
+        }
+    ]
+    // return toPlain((await loadBluvoClient().oauth2.listExchanges(status)))
 }
 
 export async function requestQuotation(walletId: string, params: {
@@ -45,7 +64,7 @@ export async function executeWithdrawal(
     walletId: string,
     idem: string,
     quoteId: string,
-    params?: { twofa?: string; smsCode?: string; }
+    params?: { twofa?: string; }
 ) {
     // executeWithdrawal error Error: Only plain objects, and a few built-ins, can be passed to Client Components from Server Components. Classes or null prototypes are not supported.
     return toPlain(await executeWithdrawalFromQuoteId({
@@ -62,18 +81,18 @@ function toPlain<T extends object>(o: T): T {
     // return Array.isArray(o) ? (o.map(toPlain) as any) : {...o};
 }
 
-export async function getWalletById(walletId: string): Promise<{ id: string; exchange: string; } | null> {
+export async function getWalletById(walletId: string) {
     try {
         const wallet = await loadBluvoClient()
             .wallet
             .get(walletId);
-
+        console.log("wallet exists", wallet.exchange);
         return {
             id: walletId,
             exchange: wallet.exchange,
         }
     } catch (e) {
-        console.error("getWalletById error", e);
+        console.error("getWalletById error");
         return null;
     }
 }

@@ -97,13 +97,7 @@ export default function Home() {
         try {
             // Generate a persistent wallet ID for the user
             // In a real app, this would be fetched from the server based on the logged-in user
-            let walletId =
-                // "28d6e02c-53e4-42f3-8cd0-a8e3602d4dba" // binance-web flo 17:20 Mon Feb 23
-                // "cf96b40d-db21-4de8-acbb-578524194bd0" // binance-web flo
-               //  "82640c17-8509-4962-a09f-68b60942bef1"
-                "7ca085b8-634d-48b5-8a73-c2cd1f761004";
-             undefined;
-            // generateId();
+            let walletId = undefined;
 
             if (!walletId) {
                 walletId = generateId();

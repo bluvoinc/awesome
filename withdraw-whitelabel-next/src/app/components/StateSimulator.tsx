@@ -51,7 +51,6 @@ interface SimulatedFlowState {
   isQuoteExpired: boolean;
   isWithdrawing: boolean;
   requires2FA: boolean;
-  requiresSMS: boolean;
   requiresKYC: boolean;
   isWithdrawalComplete: boolean;
   canRetry: boolean;
@@ -63,7 +62,6 @@ interface SimulatedFlowState {
   requestQuote: (options: any) => void;
   executeWithdrawal: (quoteId: string) => void;
   submit2FA: (code: string) => void;
-  submitSMS: (code: string) => void;
   retryWithdrawal: () => void;
 }
 
@@ -178,7 +176,6 @@ const stateOptions = [
   { value: 'quote:error', label: 'Quote - Error' },
   { value: 'withdraw:processing', label: 'Withdrawal - Processing' },
   { value: 'withdraw:error2FA', label: 'Withdrawal - Requires 2FA' },
-  { value: 'withdraw:errorSMS', label: 'Withdrawal - Requires SMS' },
   { value: 'withdraw:errorKYC', label: 'Withdrawal - Requires KYC' },
   { value: 'withdraw:errorBalance', label: 'Withdrawal - Insufficient Balance' },
   { value: 'withdraw:completed', label: 'Withdrawal - Completed' },
@@ -206,7 +203,6 @@ export function StateSimulator({ children }: StateSimulatorProps) {
       isQuoteExpired: false,
       isWithdrawing: false,
       requires2FA: false,
-      requiresSMS: false,
       requiresKYC: false,
       isWithdrawalComplete: false,
       canRetry: false,
@@ -218,7 +214,6 @@ export function StateSimulator({ children }: StateSimulatorProps) {
       requestQuote: (options) => console.log('Mock: requestQuote()', options),
       executeWithdrawal: (quoteId) => console.log('Mock: executeWithdrawal()', quoteId),
       submit2FA: (code) => console.log('Mock: submit2FA()', code),
-      submitSMS: (code) => console.log('Mock: submitSMS()', code),
       retryWithdrawal: () => console.log('Mock: retryWithdrawal()')
     };
 
@@ -281,11 +276,6 @@ export function StateSimulator({ children }: StateSimulatorProps) {
         baseState.requires2FA = true;
         baseState.quote = generateMockQuote();
         baseState.invalid2FAAttempts = invalid2FAAttempts;
-        break;
-        
-      case 'withdraw:errorSMS':
-        baseState.requiresSMS = true;
-        baseState.quote = generateMockQuote();
         break;
         
       case 'withdraw:errorKYC':

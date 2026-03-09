@@ -9,6 +9,10 @@ interface Network {
   maxWithdrawal?: string;
   assetName: string;
   addressRegex?: string | null;
+  chainId?: number;
+  tokenAddress?: string;
+  contractAddress?: string | null;
+  contractAddressVerified?: boolean | null;
 }
 
 interface Balance {
@@ -52,7 +56,6 @@ export function WalletReadyComponent({ balances, onRequestQuote }: WalletReadyCo
       destinationAddress: '',
       tag: '12345',
     },
-
   };
 
   const [selectedAsset, setSelectedAsset] = useState<string>('');
@@ -80,7 +83,7 @@ export function WalletReadyComponent({ balances, onRequestQuote }: WalletReadyCo
     if (amount) {
       const amountNum = parseFloat(amount);
       const balanceNum = parseFloat(selectedBalance?.balance || '0');
-      
+
       if (isNaN(amountNum) || amountNum <= 0) {
         newErrors.amount = 'Please enter a valid amount';
       } else if (amountNum > balanceNum) {
@@ -88,7 +91,7 @@ export function WalletReadyComponent({ balances, onRequestQuote }: WalletReadyCo
       } else if (selectedNetworkInfo) {
         const minWithdrawal = parseFloat(selectedNetworkInfo.minWithdrawal);
         const maxWithdrawal = parseFloat(selectedNetworkInfo.maxWithdrawal || 'Infinity');
-        
+
         if (amountNum < minWithdrawal) {
           newErrors.amount = `Minimum withdrawal: ${minWithdrawal} ${selectedAsset}`;
         } else if (amountNum > maxWithdrawal) {
@@ -245,13 +248,60 @@ export function WalletReadyComponent({ balances, onRequestQuote }: WalletReadyCo
               }}
             >
               <option value="">-- Select Network --</option>
-              {selectedBalance.networks.map((network) => (
-                <option key={network.id} value={network.id}>
-                  {network.displayName || network.name}
-                </option>
-              ))}
+              {selectedBalance.networks.map((network) => {
+                const networkLabel = network.displayName || network.name;
+                const chainInfo = network.chainId ? ` (Chain: ${network.chainId})` : '';
+                const tokenInfo = network.tokenAddress ? ` [Token: ${network.tokenAddress.substring(0, 6)}...${network.tokenAddress.substring(network.tokenAddress.length - 4)}]` : '';
+                return (
+                  <option key={network.id} value={network.id}>
+                    {networkLabel}{chainInfo}{tokenInfo}
+                  </option>
+                );
+              })}
             </select>
             {errors.network && <span style={{ color: 'var(--cb-error)', fontSize: '14px', marginTop: '4px', display: 'block' }}>{errors.network}</span>}
+
+            {/* Network Details Info Box */}
+            {selectedNetworkInfo && (selectedNetworkInfo.chainId || selectedNetworkInfo.tokenAddress) && (
+              <div style={{
+                marginTop: '12px',
+                padding: '12px',
+                backgroundColor: 'var(--cb-background-secondary)',
+                border: '1px solid var(--cb-border)',
+                borderRadius: '6px',
+                fontSize: '13px'
+              }}>
+                <div style={{ fontWeight: '500', color: 'var(--cb-text-primary)', marginBottom: '8px' }}>
+                  Network Details:
+                </div>
+                {selectedNetworkInfo.chainId && (
+                  <div style={{ marginBottom: '4px', color: 'var(--cb-text-secondary)' }}>
+                    <strong style={{ color: 'var(--cb-text-primary)' }}>Chain ID:</strong> {selectedNetworkInfo.chainId}
+                  </div>
+                )}
+                {selectedNetworkInfo.tokenAddress && (
+                  <div style={{ marginBottom: '4px', color: 'var(--cb-text-secondary)', wordBreak: 'break-all' }}>
+                    <strong style={{ color: 'var(--cb-text-primary)' }}>Token Address:</strong> {selectedNetworkInfo.tokenAddress}
+                  </div>
+                )}
+                {selectedNetworkInfo.contractAddress && (
+                  <div style={{ marginBottom: '4px', color: 'var(--cb-text-secondary)', wordBreak: 'break-all' }}>
+                    <strong style={{ color: 'var(--cb-text-primary)' }}>Contract Address:</strong> {selectedNetworkInfo.contractAddress}
+                    {' '}
+                    <span style={{
+                      fontSize: '12px',
+                      padding: '2px 6px',
+                      borderRadius: '4px',
+                      backgroundColor: (selectedNetworkInfo.contractAddressVerified ?? true) ? 'rgba(0, 200, 100, 0.15)' : 'rgba(255, 100, 0, 0.15)',
+                      color: (selectedNetworkInfo.contractAddressVerified ?? true) ? 'rgb(0, 200, 100)' : 'rgb(255, 100, 0)',
+                      fontWeight: '500'
+                    }}>
+                      {(selectedNetworkInfo.contractAddressVerified ?? true) ? '✓ Verified' : '⚠ Unverified'}
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 

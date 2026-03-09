@@ -1,14 +1,10 @@
 'use server'
 
-import {
-    createClient,
-    createDevClient,
-    createSandboxClient,
-    ListCentralizedExchangesResponseStatusEnum
-} from "@bluvo/sdk-ts";
+import {createClient, createDevClient, createSandboxClient, StatusEnum} from "@bluvo/sdk-ts";
 
 function loadBluvoClient() {
     if (!process.env.BLUVO_ORG_ID || !process.env.BLUVO_PROJECT_ID || !process.env.BLUVO_API_KEY) {
+        console.error("Missing Bluvo environment variables:");
         throw new Error('Missing Bluvo environment variables: BLUVO_ORG_ID, BLUVO_PROJECT_ID, BLUVO_API_KEY');
     }
 
@@ -21,22 +17,25 @@ function loadBluvoClient() {
 
 
 export async function fetchWithdrawableBalances(walletId: string) {
-    return await getWithdrawableBalanceById(walletId);
+    return toPlain(await loadBluvoClient()
+        .wallet
+        .withdrawals
+        .getWithdrawableBalance(walletId));
 }
 
-export async function listExchanges(status?: 'live' | 'offline' | 'maintenance' | 'coming_soon') {
+export async function listExchanges(status?: StatusEnum) {
     return [
         {
             id: 'coinbase',
             name: 'Coinbase',
-            logoUrl: 'https://www.bluvo.com/logos/coinbase.png',
-            status: ListCentralizedExchangesResponseStatusEnum.Live
+            logoUrl: 'https://www.bluvo.co/logos/coinbase.png',
+            status: 'live' as const,
         },
         {
             id: 'kraken',
             name: 'Kraken',
-            logoUrl: 'https://www.bluvo.com/logos/kraken.png',
-            status: ListCentralizedExchangesResponseStatusEnum.Live
+            logoUrl: 'https://www.bluvo.co/logos/kraken.pngg',
+            status: 'live' as const,
         }
     ]
     // return toPlain((await loadBluvoClient().oauth2.listExchanges(status)))
@@ -50,29 +49,59 @@ export async function requestQuotation(walletId: string, params: {
     tag?: string;
     includeFee?: boolean;
 }) {
-    return toPlain(await requestWithdrawalQuotation({
-        walletId,
-        asset: params.asset,
-        amount: parseFloat(params.amount),
-        destinationAddress: params.address,
-        network: params.network,
-        // Add other params as needed
-    }));
+    return toPlain(await loadBluvoClient()
+        .wallet
+        .withdrawals
+        .requestQuotation(
+            walletId,
+            {
+                address: params.address,
+                asset: params.asset,
+                amount: params.amount,
+                network: params.network,
+                tag: params.tag,
+                includeFee: params.includeFee ?? true,
+            }
+        ));
 }
 
 export async function executeWithdrawal(
     walletId: string,
     idem: string,
     quoteId: string,
-    params?: { twofa?: string; }
+    params?: {
+        twofa?: string;
+        emailCode?: string;
+        smsCode?: string;
+        bizNo?: string;
+        tag?: string;
+        params?: {
+            [key: string]: any;
+            dryRun?: boolean;
+        } | null;
+    }
 ) {
     // executeWithdrawal error Error: Only plain objects, and a few built-ins, can be passed to Client Components from Server Components. Classes or null prototypes are not supported.
-    return toPlain(await executeWithdrawalFromQuoteId({
-        walletId,
-        idem,
-        quoteId,
-        twoFactorCode: params?.twofa,
-    }));
+    return toPlain(
+        await loadBluvoClient()
+            .wallet
+            .withdrawals
+            .executeWithdrawal(
+                walletId,
+                idem,
+                quoteId,
+                {
+                    twofa: params?.twofa,
+                    tag: params?.tag,
+
+                    // only beta not released yet for latest sdk version, need to wait for next release
+                    // emailCode: params?.emailCode,
+                    // smsCode: params?.smsCode,
+                    // bizNo: params?.bizNo,
+                    //params: params?.params,
+                }
+            )
+    );
 }
 
 // Workaround for -> Only plain objects, and a few built-ins, can be passed to Client Components from Server Components.
@@ -82,74 +111,13 @@ function toPlain<T extends object>(o: T): T {
 }
 
 export async function getWalletById(walletId: string) {
-    try {
-        const wallet = await loadBluvoClient()
-            .wallet
-            .get(walletId);
-        console.log("wallet exists", wallet.exchange);
-        return {
-            id: walletId,
-            exchange: wallet.exchange,
-        }
-    } catch (e) {
-        console.error("getWalletById error");
-        return null;
-    }
-}
-
-async function getWithdrawableBalanceById(walletId: string) {
     return toPlain(await loadBluvoClient()
         .wallet
-        .withdrawals
-        .getWithdrawableBalance(walletId));
+        .get(walletId));
 }
 
-export async function requestWithdrawalQuotation(request: {
-    walletId: string
-    asset: string
-    amount: number
-    destinationAddress: string
-    network?: string
-    tag?: string
-    includeFee?: boolean
-}) {
-    return await loadBluvoClient()
-        .wallet
-        .withdrawals
-        .requestQuotation(
-            request.walletId,
-            {
-                asset: request.asset,
-                amount: String(request.amount),
-                address: request.destinationAddress,
-                network: request.network,
-                tag: request.tag,
-                includeFee: request.includeFee,
-            }
-        );
-
-}
-
-export async function executeWithdrawalFromQuoteId(request: {
-    walletId: string
-    idem: string
-    quoteId: string
-
-    // first time is optional so we know if we need to ask for 2FA or not
-    twoFactorCode?: string
-}) {
-
-    console.log("shooting withdrawal for quoteId", request.quoteId, "on wallet", request.walletId, "with 2fa", request.twoFactorCode);
-
-    return await loadBluvoClient()
-        .wallet
-        .withdrawals
-        .executeWithdrawal(
-            request.walletId, // <-- same of the owned wallet by the user
-            request.idem, // <-- pick a random uuid
-            request.quoteId,
-            {
-                twofa: request.twoFactorCode
-            }
-        );
+export async function pingWalletById(walletId: string) {
+    return toPlain(await loadBluvoClient()
+            .wallet
+            .ping(walletId));
 }

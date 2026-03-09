@@ -6,7 +6,8 @@ import {
     requestQuotation,
     executeWithdrawal,
     listExchanges,
-    getWalletById
+    getWalletById,
+    pingWalletById
 } from '../actions/flowActions';
 
 // State-specific components
@@ -16,7 +17,6 @@ import {WalletReadyComponent} from '../components/states/WalletReadyComponent';
 import {QuoteLoadingComponent} from '../components/states/QuoteLoadingComponent';
 import {QuoteReadyComponent} from '../components/states/QuoteReadyComponent';
 import {RequireTwoFactorAuthenticationCode} from '../components/states/RequireTwoFactorAuthenticationCode';
-import {RequireSMSCode} from '../components/states/RequireSMSCode';
 import {RequireKYCComponent} from '../components/states/RequireKYCComponent';
 import {WithdrawalCompletedComponent} from '../components/states/WithdrawalCompletedComponent';
 import {ErrorComponent} from '../components/states/ErrorComponent';
@@ -43,23 +43,44 @@ export default function Home() {
     const [useSimulator, setUseSimulator] = React.useState(false);
     const [isButtonLoading, setIsButtonLoading] = React.useState(false);
 
+    if (!process.env.NEXT_PUBLIC_BLUVO_ORG_ID || !process.env.NEXT_PUBLIC_BLUVO_PROJECT_ID) {
+        return "Missing Bluvo environment variables: NEXT_PUBLIC_BLUVO_ORG_ID, NEXT_PUBLIC_BLUVO_PROJECT_ID";
+    }
+
     // Initialize the flow with server action callbacks
     const flow = useBluvoFlow({
-        orgId: "imSgZyiY2EsbKboJzbbhMDHcknWB3pfY",
-        projectId: "VOPomUho1UWAfLc2To9uCYdcZ2dGDeR7",
+        orgId: process.env.NEXT_PUBLIC_BLUVO_ORG_ID || '',
+        projectId: process.env.NEXT_PUBLIC_BLUVO_PROJECT_ID || '',
+
+        options: {
+
+            autoRefreshQuotation: false,
+            // dev: process.env.NEXT_PUBLIC_BLUVO_ENV === 'development',
+            // sandbox: true,// process.env.NEXT_PUBLIC_BLUVO_ENV === 'staging',
+            // customDomain: undefined, // or your custom domain that CNAMES to -> api-bluvo.com
+        },
 
         listExchangesFn: listExchanges,
         fetchWithdrawableBalanceFn: fetchWithdrawableBalances,
         requestQuotationFn: requestQuotation,
         executeWithdrawalFn: executeWithdrawal,
         getWalletByIdFn: getWalletById,
-    });
+        pingWalletByIdFn: pingWalletById,
 
+        onWalletConnectedFn: (walletId, exchange) => {
+            // call server action store this walletId for the currently-logged in user
+            console.log("Should store walletId for the user:", walletId, exchange);
+
+            // store the walletId in localStorage for demo purposes
+            localStorage.setItem('connectedWalletId', walletId);
+            localStorage.setItem('connectedExchange', exchange);
+        }
+    });
     // Load exchanges on component mount
     React.useEffect(() => {
         const loadExchanges = async () => {
             try {
-                await flow.listExchanges('live'); // Only load live exchanges
+                await flow.listExchanges('live' as any); // Only load live exchanges
                 // Set default selection to first available exchange
                 if (flow.exchanges.length > 0 && !selectedExchange) {
                     setSelectedExchange(flow.exchanges[0].id);
@@ -77,10 +98,13 @@ export default function Home() {
             // Generate a persistent wallet ID for the user
             // In a real app, this would be fetched from the server based on the logged-in user
             let walletId =
-                "b6b39891-1d40-401e-b2ae-0ca35bf3a0b6";
-                // generateId();
-                 //  "624ed616-ba33-44e0-a9a1-896bd9804f75"
-                // localStorage.getItem('userWalletId');
+                // "28d6e02c-53e4-42f3-8cd0-a8e3602d4dba" // binance-web flo 17:20 Mon Feb 23
+                // "cf96b40d-db21-4de8-acbb-578524194bd0" // binance-web flo
+               //  "82640c17-8509-4962-a09f-68b60942bef1"
+                "7ca085b8-634d-48b5-8a73-c2cd1f761004";
+             undefined;
+            // generateId();
+
             if (!walletId) {
                 walletId = generateId();
                 localStorage.setItem('userWalletId', walletId);
@@ -294,14 +318,7 @@ export default function Home() {
                     expiresAt={flowState.quote?.expiresAt}
                 />
             )}
-            
-            {flowState.requiresSMS && (
-                <RequireSMSCode
-                    onSubmitSMS={flowState.submitSMS}
-                    isSubmitting={false}
-                />
-            )}
-            
+
             {flowState.requiresKYC && <RequireKYCComponent onCancel={flowState.cancel} />}
             
             {flowState.isWithdrawalComplete && flowState.withdrawal && (
